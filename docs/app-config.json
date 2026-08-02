@@ -1,23 +1,23 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T08:53:06.581Z",
+  "updatedAt": "2026-08-02T09:00:30.824Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "off",
     "targetVersion": "1.4",
-    "storeURL": "",
+    "storeURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
     "title": "有新版本可用",
     "message": "建議更新以獲得最新功能與修正。"
   },
   "announcement": {
     "enabled": true,
-    "id": "test-2026-08-02-a",
+    "id": "test-2026-08-02-b",
     "style": "modal",
     "title": "測試公告2",
     "body": "若你看得到這段，遠端公告正常。",
     "accent": "warning",
-    "ctaLabel": null,
-    "ctaURL": null,
+    "ctaLabel": "測試按鈕",
+    "ctaURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
     "dismissible": true,
     "startsAt": null,
     "endsAt": null
