@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T09:06:21.141Z",
+  "updatedAt": "2026-08-02T09:11:50.450Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
@@ -19,7 +19,7 @@
     "ctaLabel": "測試按鈕",
     "ctaURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
     "dismissible": true,
-    "startsAt": "123",
+    "startsAt": null,
     "endsAt": null
   }
 }
