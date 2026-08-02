@@ -21,6 +21,17 @@
     if (saved === "light" || saved === "dark") setTheme(saved);
   }
 
+  function initAccordions() {
+    document.querySelectorAll("[data-accordion]").forEach((section) => {
+      const head = section.querySelector(".accordion-head");
+      if (!head) return;
+      head.addEventListener("click", () => {
+        const open = section.classList.toggle("open");
+        head.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+    });
+  }
+
   function unlockUI() {
     $("gate").classList.add("hidden");
     $("app").classList.remove("hidden");
@@ -37,6 +48,57 @@
   function emptyToNull(s) {
     const t = (s || "").trim();
     return t ? t : null;
+  }
+
+  function parseVersionParts(v) {
+    return String(v || "")
+      .trim()
+      .split(".")
+      .map((p) => parseInt(p.replace(/\D/g, ""), 10) || 0);
+  }
+
+  function compareVersion(a, b) {
+    const left = parseVersionParts(a);
+    const right = parseVersionParts(b);
+    const n = Math.max(left.length, right.length);
+    for (let i = 0; i < n; i++) {
+      const lv = left[i] || 0;
+      const rv = right[i] || 0;
+      if (lv < rv) return -1;
+      if (lv > rv) return 1;
+    }
+    return 0;
+  }
+
+  function updateVersionHints() {
+    const current = CFG.currentAppVersion || "1.4";
+    const label = $("currentAppVersionLabel");
+    if (label) label.textContent = current;
+
+    const target = ($("updTarget").value || "").trim();
+    const hint = $("updTargetHint");
+    if (!hint) return;
+    if (!target) {
+      hint.textContent = "請填與 App 相同格式，例如 " + current;
+      hint.style.color = "";
+      return;
+    }
+    if (!/^\d+(\.\d+)*$/.test(target)) {
+      hint.textContent = "格式建議為數字與點，例如 1.4 或 1.4.0（不要填 build）";
+      hint.style.color = "var(--danger)";
+      return;
+    }
+    const cmp = compareVersion(current, target);
+    if (cmp === 0) {
+      hint.textContent = "等於目前參考版 " + current + " → 已安裝此版的使用者不會被提醒";
+      hint.style.color = "var(--text2)";
+    } else if (cmp < 0) {
+      hint.textContent = "高於目前參考版 " + current + " → 現有 1.4 使用者會被提醒／強制（視模式）";
+      hint.style.color = "var(--accent)";
+    } else {
+      hint.textContent = "低於目前參考版 " + current + " → 通常不會觸發（本機已較新）";
+      hint.style.color = "var(--danger)";
+    }
   }
 
   function readForm() {
@@ -88,6 +150,7 @@
     $("updMessage").value = upd.message || "";
     $("feedbackURL").value = cfg.feedbackFormURL || "https://forms.gle/tGECU4KmFZqs8DRD8";
     updatePreview();
+    updateVersionHints();
   }
 
   function willShowAnnouncement(ann) {
@@ -97,31 +160,68 @@
     return !!(t || b);
   }
 
+  function accentBorder(accent) {
+    switch ((accent || "").toLowerCase()) {
+      case "warning": return "#F59E0B";
+      case "danger": return "#F87171";
+      case "info": return "#3B82F6";
+      default: return "#16A34A";
+    }
+  }
+
   function updatePreview() {
     const cfg = readForm();
     const box = $("annPreview");
     const ann = cfg.announcement;
+    box.innerHTML = "";
     if (!willShowAnnouncement(ann)) {
-      box.className = "preview empty";
-      box.textContent = "不顯示公告";
+      const empty = document.createElement("div");
+      empty.className = "phone-empty";
+      empty.textContent = "不顯示公告";
+      box.appendChild(empty);
       return;
     }
-    box.className = "preview";
-    box.innerHTML = "";
+
+    const card = document.createElement("div");
+    card.className = "ann-card" + (ann.style === "banner" ? " banner" : "");
+    card.style.borderColor = accentBorder(ann.accent);
+
     const tag = document.createElement("div");
     tag.className = "tag";
     tag.textContent = `公告 · ${ann.style}`;
-    box.appendChild(tag);
+    tag.style.color = accentBorder(ann.accent);
+    tag.style.background = accentBorder(ann.accent) + "33";
+    card.appendChild(tag);
+
     if (ann.title) {
       const h = document.createElement("h3");
       h.textContent = ann.title;
-      box.appendChild(h);
+      card.appendChild(h);
     }
     if (ann.body) {
       const p = document.createElement("p");
       p.textContent = ann.body;
-      box.appendChild(p);
+      card.appendChild(p);
     }
+
+    const row = document.createElement("div");
+    row.className = "cta-row";
+    if (ann.ctaLabel) {
+      const cta = document.createElement("div");
+      cta.className = "cta primary";
+      cta.style.background = accentBorder(ann.accent);
+      cta.textContent = ann.ctaLabel;
+      row.appendChild(cta);
+    }
+    if (ann.dismissible) {
+      const close = document.createElement("div");
+      close.className = "cta ghost";
+      close.textContent = ann.ctaLabel ? "關閉" : "知道了";
+      row.appendChild(close);
+    }
+    if (row.childNodes.length) card.appendChild(row);
+
+    box.appendChild(card);
   }
 
   async function fetchConfig() {
@@ -244,7 +344,6 @@
     }
   }
 
-  // Events
   $("gateBtn").addEventListener("click", tryGate);
   $("gatePassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") tryGate();
@@ -260,6 +359,8 @@
   $("loadBtn").addEventListener("click", fetchConfig);
   $("downloadBtn").addEventListener("click", downloadJSON);
   $("publishBtn").addEventListener("click", publish);
+  $("updTarget").addEventListener("input", updateVersionHints);
+  $("updTarget").addEventListener("change", updateVersionHints);
 
   [
     "annEnabled", "annDismissible", "annId", "annStyle", "annAccent",
@@ -270,11 +371,12 @@
   });
 
   initTheme();
+  initAccordions();
+  updateVersionHints();
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     unlockUI();
     fetchConfig();
   }
 
-  // 方便維護者產生新雜湊
   window.sha256Hex = sha256Hex;
 })();

@@ -8,116 +8,177 @@
   <script src="./config.js"></script>
 </head>
 <body>
-  <div id="gate" class="card gate">
-    <h1>股帳曆｜公告配送站</h1>
-    <p class="sub">站門密碼僅隱藏操作介面；寫入需 GitHub PAT。</p>
-    <input id="gatePassword" type="password" placeholder="站門密碼" autocomplete="current-password" />
-    <button class="btn" id="gateBtn" type="button">進入</button>
-    <p id="gateStatus" class="status"></p>
-  </div>
-
-  <div id="app" class="hidden">
-    <div class="topbar">
-      <div>
-        <h1>股帳曆｜公告配送站</h1>
-        <p class="sub">編輯後發布會寫入 <code>docs/app-config.json</code>（GitHub Pages）。</p>
-      </div>
-      <div class="actions">
-        <button class="btn secondary" type="button" id="themeBtn">切換深／淺</button>
-        <button class="btn secondary" type="button" id="logoutBtn">登出</button>
-      </div>
+  <div class="shell">
+    <div id="gate" class="card gate">
+      <h1>股帳曆｜公告配送站</h1>
+      <p class="sub">站門密碼僅隱藏操作介面；寫入需 GitHub PAT。</p>
+      <input id="gatePassword" type="password" placeholder="站門密碼" autocomplete="current-password" />
+      <button class="btn" id="gateBtn" type="button">進入</button>
+      <p id="gateStatus" class="status"></p>
     </div>
 
-    <div class="card actions">
-      <button class="btn secondary" type="button" id="loadBtn">載入線上版</button>
-      <button class="btn secondary" type="button" id="downloadBtn">下載 JSON</button>
-      <span id="loadStatus" class="status"></span>
-    </div>
-
-    <div class="card">
-      <h2>公告（App 內醒目提示）</h2>
-      <div class="row">
-        <label class="check field"><input type="checkbox" id="annEnabled" /> 啟用公告</label>
-        <label class="check field"><input type="checkbox" id="annDismissible" checked /> 可關閉</label>
-      </div>
-      <div class="row">
-        <div class="field"><label>ID（關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
-        <div class="field">
-          <label>樣式</label>
-          <select id="annStyle">
-            <option value="fullscreen">fullscreen（極醒目）</option>
-            <option value="modal">modal</option>
-            <option value="banner">banner</option>
-          </select>
+    <div id="app" class="hidden">
+      <div class="topbar">
+        <div>
+          <h1>股帳曆｜公告配送站</h1>
+          <p class="sub">編輯後發布會寫入 <code>docs/app-config.json</code>（GitHub Pages）。</p>
         </div>
-        <div class="field">
-          <label>強調色</label>
-          <select id="annAccent">
-            <option value="brand">brand 綠</option>
-            <option value="warning">warning 琥珀</option>
-            <option value="danger">danger 紅</option>
-            <option value="info">info 藍</option>
-          </select>
+        <div class="actions">
+          <button class="btn secondary" type="button" id="themeBtn">切換深／淺</button>
+          <button class="btn secondary" type="button" id="logoutBtn">登出</button>
         </div>
       </div>
-      <div class="row">
-        <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
-        <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>開始（ISO，選填）</label><input id="annStarts" placeholder="2026-08-01T00:00:00+08:00" /></div>
-        <div class="field"><label>結束（ISO，選填）</label><input id="annEnds" placeholder="" /></div>
-      </div>
-      <h2>預覽</h2>
-      <div id="annPreview" class="preview empty">不顯示公告</div>
-    </div>
 
-    <div class="card">
-      <h2>版本更新提示</h2>
-      <div class="row">
-        <div class="field">
-          <label>模式</label>
-          <select id="updMode">
-            <option value="off">off（關閉）</option>
-            <option value="soft">soft（提醒，可略過）</option>
-            <option value="force">force（強制，需商店已有該版）</option>
-          </select>
+      <div class="card">
+        <div class="card-body toolbar">
+          <button class="btn secondary" type="button" id="loadBtn">載入線上版</button>
+          <button class="btn secondary" type="button" id="downloadBtn">下載 JSON</button>
+          <span id="loadStatus" class="status"></span>
         </div>
-        <div class="field"><label>目標版本 targetVersion</label><input id="updTarget" placeholder="1.4" /></div>
-        <div class="field"><label>App Store URL（選填）</label><input id="updStore" placeholder="https://apps.apple.com/…" /></div>
       </div>
-      <div class="row">
-        <div class="field"><label>標題</label><input id="updTitle" /></div>
-      </div>
-      <div class="row">
-        <div class="field"><label>訊息</label><textarea id="updMessage"></textarea></div>
-      </div>
-    </div>
 
-    <div class="card">
-      <h2>其他</h2>
-      <div class="row">
-        <div class="field"><label>回報表單 URL</label><input id="feedbackURL" /></div>
-      </div>
-    </div>
+      <section class="card accordion" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="false">
+          <h2>公告（App 內醒目提示）</h2>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>
+        <div class="card-body">
+          <p class="hint">
+            <strong>啟用公告</strong>：關掉＝App 完全不顯示這則（即使有文字）。<br />
+            <strong>可關閉</strong>：開啟＝使用者可按「知道了」；關閉後依 ID 記住、同 ID 不再跳出。取消勾選＝無法關閉（慎用）。
+          </p>
+          <div class="row">
+            <label class="check field"><input type="checkbox" id="annEnabled" /> 啟用公告</label>
+            <label class="check field"><input type="checkbox" id="annDismissible" checked /> 可關閉</label>
+          </div>
+          <div class="row">
+            <div class="field"><label>ID（關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
+            <div class="field">
+              <label>樣式</label>
+              <select id="annStyle">
+                <option value="fullscreen">fullscreen（極醒目）</option>
+                <option value="modal">modal</option>
+                <option value="banner">banner</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>強調色</label>
+              <select id="annAccent">
+                <option value="brand">brand 綠</option>
+                <option value="warning">warning 琥珀</option>
+                <option value="danger">danger 紅</option>
+                <option value="info">info 藍</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
+            <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>開始（ISO，選填）</label><input id="annStarts" placeholder="2026-08-01T00:00:00+08:00" /></div>
+            <div class="field"><label>結束（ISO，選填）</label><input id="annEnds" placeholder="" /></div>
+          </div>
+        </div>
+      </section>
 
-    <div class="card">
-      <h2>發布到 GitHub</h2>
-      <p class="sub">貼上 fine-grained PAT（contents:write，限本 repo）。Token 只存在此瀏覽器 session，不會寫入倉庫。</p>
-      <div class="row">
-        <div class="field"><label>GitHub PAT</label><input id="pat" type="password" autocomplete="off" placeholder="github_pat_…" /></div>
-        <div class="field"><label>Commit 說明</label><input id="commitMsg" placeholder="chore: update app-config" /></div>
-      </div>
-      <div class="actions">
-        <button class="btn" type="button" id="publishBtn">驗證並發布</button>
-      </div>
-      <p id="publishStatus" class="status"></p>
+      <section class="card accordion" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="false">
+          <h2>預覽（iOS 外型）</h2>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>
+        <div class="card-body">
+          <div class="phone-wrap">
+            <div class="phone">
+              <div class="phone-screen">
+                <div class="phone-status"><span>9:41</span><span>▮▮▮</span></div>
+                <div class="phone-appbar">股帳曆</div>
+                <div class="phone-body" id="annPreview">
+                  <div class="phone-empty">不顯示公告</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card accordion" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="false">
+          <h2>版本更新提示</h2>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>
+        <div class="card-body">
+          <div class="version-chip">
+            版本格式：<strong>major.minor</strong>（例 <strong>1.4</strong>）
+            · 目前 App 行銷版參考：<strong id="currentAppVersionLabel">—</strong>
+          </div>
+          <p class="hint">
+            App 會比較本機 <code>CFBundleShortVersionString</code> 與下方 <code>targetVersion</code>。
+            本機較舊才會跳出提醒／強制更新。請用相同維度（勿填 build 號如 4）。
+          </p>
+          <div class="row">
+            <div class="field">
+              <label>模式</label>
+              <select id="updMode">
+                <option value="off">off（關閉）</option>
+                <option value="soft">soft（提醒，可略過）</option>
+                <option value="force">force（強制，需商店已有該版）</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>目標版本 targetVersion</label>
+              <input id="updTarget" placeholder="1.4" />
+              <span class="hint" id="updTargetHint" style="margin:4px 0 0;"></span>
+            </div>
+            <div class="field"><label>App Store URL（選填）</label><input id="updStore" placeholder="https://apps.apple.com/…" /></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>標題</label><input id="updTitle" /></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>訊息</label><textarea id="updMessage"></textarea></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card accordion" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="false">
+          <h2>其他</h2>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>
+        <div class="card-body">
+          <div class="row">
+            <div class="field"><label>回報表單 URL</label><input id="feedbackURL" /></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card accordion" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="false">
+          <h2>發布到 GitHub</h2>
+          <span class="chev" aria-hidden="true">›</span>
+        </button>
+        <div class="card-body">
+          <p class="hint">
+            貼上 fine-grained PAT（此 repo 的 Contents 讀寫）。Token 只留在瀏覽器，不會寫進倉庫。<br />
+            <strong>Commit 說明</strong>：寫進 Git 歷史的這次變更留言（方便之後辨認「改了什麼」），不影響 App 顯示。
+          </p>
+          <div class="row">
+            <div class="field"><label>GitHub PAT</label><input id="pat" type="password" autocomplete="off" placeholder="github_pat_…" /></div>
+            <div class="field"><label>Commit 說明</label><input id="commitMsg" placeholder="chore: update app-config" /></div>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" id="publishBtn">驗證並發布</button>
+          </div>
+          <p id="publishStatus" class="status"></p>
+        </div>
+      </section>
     </div>
   </div>
 
