@@ -170,6 +170,98 @@ textarea { min-height: 88px; resize: vertical; }
   font-weight: 700;
 }
 
+.toggle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.toggle-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--bg2);
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+.toggle-card input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.toggle-ui {
+  position: relative;
+  width: 46px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: #CBD5E1;
+  transition: background 0.18s ease;
+}
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+  transition: transform 0.18s ease;
+}
+.toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.toggle-copy strong {
+  font-size: 0.92rem;
+  color: var(--text);
+  font-weight: 800;
+}
+.toggle-copy small {
+  font-size: 0.72rem;
+  color: var(--text2);
+  line-height: 1.3;
+}
+.toggle-card--ok:has(input:checked) {
+  border-color: rgba(22, 163, 74, 0.55);
+  background: rgba(22, 163, 74, 0.1);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.08);
+}
+.toggle-card--ok:has(input:checked) .toggle-ui { background: #16A34A; }
+.toggle-card--ok:has(input:checked) .toggle-knob { transform: translateX(18px); }
+.toggle-card--ok:has(input:checked) .toggle-copy strong { color: #15803D; }
+
+.toggle-card--danger:has(input:checked) {
+  border-color: rgba(220, 38, 38, 0.55);
+  background: linear-gradient(135deg, rgba(201, 137, 126, 0.28), rgba(220, 38, 38, 0.12));
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+.toggle-card--danger:has(input:checked) .toggle-ui { background: #DC2626; }
+.toggle-card--danger:has(input:checked) .toggle-knob { transform: translateX(18px); }
+.toggle-card--danger:has(input:checked) .toggle-copy strong { color: #B91C1C; }
+.toggle-card--danger .toggle-copy strong { color: #B91C1C; }
+
+.toggle-card:focus-within {
+  outline: 2px solid rgba(22, 163, 74, 0.35);
+  outline-offset: 2px;
+}
+.toggle-card--danger:focus-within {
+  outline-color: rgba(220, 38, 38, 0.35);
+}
+
+@media (max-width: 720px) {
+  .toggle-row { grid-template-columns: 1fr; }
+}
+
 .version-chip {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 8px 12px; border-radius: 999px;

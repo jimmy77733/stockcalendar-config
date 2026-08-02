@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>股帳曆｜公告推播站</title>
-  <link rel="stylesheet" href="./styles.css?v=20260802f" />
-  <script src="./config.js?v=20260802f"></script>
+  <link rel="stylesheet" href="./styles.css?v=20260802g" />
+  <script src="./config.js?v=20260802g"></script>
 </head>
 <body>
   <div class="shell">
@@ -57,9 +57,23 @@
                 <strong>啟用公告</strong>：關掉＝完全不顯示。<br />
                 <strong>維護中</strong>：開啟後使用者無法關閉公告、無法進入 App 功能（請一併啟用公告並填標題／內文後發布）。
               </p>
-              <div class="row">
-                <label class="check field"><input type="checkbox" id="annEnabled" /> 啟用公告</label>
-                <label class="check field check-danger"><input type="checkbox" id="annMaintenance" /> 維護中</label>
+              <div class="toggle-row">
+                <label class="toggle-card toggle-card--ok">
+                  <input type="checkbox" id="annEnabled" />
+                  <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
+                  <span class="toggle-copy">
+                    <strong>啟用公告</strong>
+                    <small>關閉後完全不顯示</small>
+                  </span>
+                </label>
+                <label class="toggle-card toggle-card--danger">
+                  <input type="checkbox" id="annMaintenance" />
+                  <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
+                  <span class="toggle-copy">
+                    <strong>維護中</strong>
+                    <small>全螢幕阻擋，無法關閉</small>
+                  </span>
+                </label>
               </div>
               <div class="row">
                 <div class="field"><label>ID（非維護時，關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
@@ -281,6 +295,6 @@
     </div>
   </div>
 
-  <script src="./app.js?v=20260802f"></script>
+  <script src="./app.js?v=20260802g"></script>
 </body>
 </html>
