@@ -81,9 +81,40 @@
             <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
             <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
           </div>
-          <div class="row">
-            <div class="field"><label>開始（ISO，選填）</label><input id="annStarts" placeholder="2026-08-01T00:00:00+08:00" /></div>
-            <div class="field"><label>結束（ISO，選填）</label><input id="annEnds" placeholder="" /></div>
+          <div class="datetime-block">
+            <label>開始時間（選填）</label>
+            <p class="hint" style="margin:0 0 8px;">從何時開始顯示；全部留空＝立刻可顯示。時區固定台北＋08:00。</p>
+            <div class="datetime-grid" data-dt="starts">
+              <div class="dt-part"><span>年</span><input id="startsY" inputmode="numeric" maxlength="4" placeholder="2026" /></div>
+              <div class="dt-part"><span>月</span><input id="startsM" inputmode="numeric" maxlength="2" placeholder="08" /></div>
+              <div class="dt-part"><span>日</span><input id="startsD" inputmode="numeric" maxlength="2" placeholder="01" /></div>
+              <div class="dt-part"><span>時</span><input id="startsH" inputmode="numeric" maxlength="2" placeholder="09" /></div>
+              <div class="dt-part"><span>分</span><input id="startsMin" inputmode="numeric" maxlength="2" placeholder="00" /></div>
+              <button type="button" class="btn secondary dt-clear" data-clear="starts">清空</button>
+            </div>
+            <div class="dt-meta">
+              <code id="startsISO" class="dt-iso">（未設定）</code>
+              <span id="startsErr" class="dt-err" hidden></span>
+            </div>
+            <input type="hidden" id="annStarts" value="" />
+          </div>
+
+          <div class="datetime-block">
+            <label>結束時間（選填）</label>
+            <p class="hint" style="margin:0 0 8px;">過了這個時間就不顯示；全部留空＝不自動下架。</p>
+            <div class="datetime-grid" data-dt="ends">
+              <div class="dt-part"><span>年</span><input id="endsY" inputmode="numeric" maxlength="4" placeholder="2026" /></div>
+              <div class="dt-part"><span>月</span><input id="endsM" inputmode="numeric" maxlength="2" placeholder="08" /></div>
+              <div class="dt-part"><span>日</span><input id="endsD" inputmode="numeric" maxlength="2" placeholder="31" /></div>
+              <div class="dt-part"><span>時</span><input id="endsH" inputmode="numeric" maxlength="2" placeholder="23" /></div>
+              <div class="dt-part"><span>分</span><input id="endsMin" inputmode="numeric" maxlength="2" placeholder="59" /></div>
+              <button type="button" class="btn secondary dt-clear" data-clear="ends">清空</button>
+            </div>
+            <div class="dt-meta">
+              <code id="endsISO" class="dt-iso">（未設定）</code>
+              <span id="endsErr" class="dt-err" hidden></span>
+            </div>
+            <input type="hidden" id="annEnds" value="" />
           </div>
         </div>
       </section>
@@ -156,7 +187,14 @@
               <input id="updTarget" placeholder="1.4" />
               <span class="hint" id="updTargetHint" style="margin:4px 0 0;"></span>
             </div>
-            <div class="field"><label>App Store URL（選填）</label><input id="updStore" placeholder="https://apps.apple.com/…" /></div>
+            <div class="field">
+              <label>App Store URL（選填）</label>
+              <div class="inline-row">
+                <input id="updStore" placeholder="https://apps.apple.com/app/id…" />
+                <button class="btn secondary" type="button" id="fillStoreBtn" title="清空後帶入預設商店連結">帶入</button>
+              </div>
+              <span class="hint" style="margin:4px 0 0;">預設為永久 App ID 連結；按「帶入」會先清空再填入。</span>
+            </div>
           </div>
           <div class="row">
             <div class="field"><label>標題</label><input id="updTitle" /></div>
@@ -190,7 +228,13 @@
             <strong>Commit 說明</strong>：寫進 Git 歷史的這次變更留言（方便之後辨認「改了什麼」），不影響 App 顯示。
           </p>
           <div class="row">
-            <div class="field"><label>GitHub PAT</label><input id="pat" type="password" autocomplete="off" placeholder="github_pat_…" /></div>
+            <div class="field">
+              <label>GitHub PAT</label>
+              <div class="inline-row">
+                <input id="pat" type="password" autocomplete="off" placeholder="github_pat_…" />
+                <button class="btn secondary icon-btn" type="button" id="patToggle" aria-label="顯示或隱藏 PAT">👁</button>
+              </div>
+            </div>
             <div class="field"><label>Commit 說明</label><input id="commitMsg" placeholder="chore: update app-config" /></div>
           </div>
           <div class="actions">

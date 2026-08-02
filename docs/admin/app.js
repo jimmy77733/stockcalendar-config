@@ -50,6 +50,185 @@
     return t ? t : null;
   }
 
+  const DT_FIELDS = {
+    starts: { y: "startsY", m: "startsM", d: "startsD", h: "startsH", min: "startsMin", hidden: "annStarts", iso: "startsISO", err: "startsErr" },
+    ends: { y: "endsY", m: "endsM", d: "endsD", h: "endsH", min: "endsMin", hidden: "annEnds", iso: "endsISO", err: "endsErr" }
+  };
+
+  function pad2(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function daysInMonth(year, month) {
+    return new Date(year, month, 0).getDate();
+  }
+
+  function readDtParts(key) {
+    const f = DT_FIELDS[key];
+    return {
+      y: ($(f.y).value || "").trim(),
+      m: ($(f.m).value || "").trim(),
+      d: ($(f.d).value || "").trim(),
+      h: ($(f.h).value || "").trim(),
+      min: ($(f.min).value || "").trim()
+    };
+  }
+
+  function clearDtInvalid(key) {
+    const f = DT_FIELDS[key];
+    [f.y, f.m, f.d, f.h, f.min].forEach((id) => $(id).classList.remove("is-invalid"));
+  }
+
+  function markDtInvalid(key, fields) {
+    const f = DT_FIELDS[key];
+    const map = { y: f.y, m: f.m, d: f.d, h: f.h, min: f.min };
+    fields.forEach((k) => {
+      if (map[k]) $(map[k]).classList.add("is-invalid");
+    });
+  }
+
+  /** 回傳 { ok, empty, iso, error, invalidFields } */
+  function assembleDatetime(key) {
+    const parts = readDtParts(key);
+    const values = [parts.y, parts.m, parts.d, parts.h, parts.min];
+    const filled = values.filter((v) => v !== "");
+    if (filled.length === 0) {
+      return { ok: true, empty: true, iso: null, error: "", invalidFields: [] };
+    }
+    if (filled.length < 5) {
+      const missing = [];
+      if (!parts.y) missing.push("y");
+      if (!parts.m) missing.push("m");
+      if (!parts.d) missing.push("d");
+      if (!parts.h) missing.push("h");
+      if (!parts.min) missing.push("min");
+      return {
+        ok: false,
+        empty: false,
+        iso: null,
+        error: "請填齊年／月／日／時／分，或全部清空",
+        invalidFields: missing
+      };
+    }
+
+    if (!/^\d{4}$/.test(parts.y)) {
+      return { ok: false, empty: false, iso: null, error: "年份須為 4 位數字", invalidFields: ["y"] };
+    }
+    const y = parseInt(parts.y, 10);
+    const m = parseInt(parts.m, 10);
+    const d = parseInt(parts.d, 10);
+    const h = parseInt(parts.h, 10);
+    const min = parseInt(parts.min, 10);
+
+    if (!Number.isInteger(m) || m < 1 || m > 12 || !/^\d{1,2}$/.test(parts.m)) {
+      return { ok: false, empty: false, iso: null, error: "月份須為 1–12", invalidFields: ["m"] };
+    }
+    const maxD = daysInMonth(y, m);
+    if (!Number.isInteger(d) || d < 1 || d > maxD || !/^\d{1,2}$/.test(parts.d)) {
+      return { ok: false, empty: false, iso: null, error: `日期須為 1–${maxD}`, invalidFields: ["d"] };
+    }
+    if (!Number.isInteger(h) || h < 0 || h > 23 || !/^\d{1,2}$/.test(parts.h)) {
+      return { ok: false, empty: false, iso: null, error: "小時須為 0–23", invalidFields: ["h"] };
+    }
+    if (!Number.isInteger(min) || min < 0 || min > 59 || !/^\d{1,2}$/.test(parts.min)) {
+      return { ok: false, empty: false, iso: null, error: "分鐘須為 0–59", invalidFields: ["min"] };
+    }
+    if (y < 2020 || y > 2100) {
+      return { ok: false, empty: false, iso: null, error: "年份請介於 2020–2100", invalidFields: ["y"] };
+    }
+
+    const iso = `${y}-${pad2(m)}-${pad2(d)}T${pad2(h)}:${pad2(min)}:00+08:00`;
+    // 再驗證可被 Date 解析
+    const parsed = Date.parse(iso);
+    if (Number.isNaN(parsed)) {
+      return { ok: false, empty: false, iso: null, error: "無法組成有效時間", invalidFields: ["y", "m", "d", "h", "min"] };
+    }
+    return { ok: true, empty: false, iso, error: "", invalidFields: [] };
+  }
+
+  function syncDatetimeUI(key) {
+    const f = DT_FIELDS[key];
+    clearDtInvalid(key);
+    const result = assembleDatetime(key);
+    const isoEl = $(f.iso);
+    const errEl = $(f.err);
+    if (result.empty) {
+      $(f.hidden).value = "";
+      isoEl.textContent = "（未設定）";
+      isoEl.classList.remove("ok");
+      errEl.hidden = true;
+      errEl.textContent = "";
+      return result;
+    }
+    if (!result.ok) {
+      $(f.hidden).value = "";
+      markDtInvalid(key, result.invalidFields);
+      isoEl.textContent = "格式錯誤";
+      isoEl.classList.remove("ok");
+      errEl.hidden = false;
+      errEl.textContent = result.error;
+      return result;
+    }
+    $(f.hidden).value = result.iso;
+    isoEl.textContent = result.iso;
+    isoEl.classList.add("ok");
+    errEl.hidden = true;
+    errEl.textContent = "";
+    return result;
+  }
+
+  function syncAllDatetimes() {
+    return {
+      starts: syncDatetimeUI("starts"),
+      ends: syncDatetimeUI("ends")
+    };
+  }
+
+  function clearDatetime(key) {
+    const f = DT_FIELDS[key];
+    [f.y, f.m, f.d, f.h, f.min].forEach((id) => { $(id).value = ""; });
+    syncDatetimeUI(key);
+    updatePreview();
+  }
+
+  /** 解析 ISO 字串填回分割欄位（支援 +08:00 / Z） */
+  function fillDatetimeFromISO(key, iso) {
+    const f = DT_FIELDS[key];
+    [f.y, f.m, f.d, f.h, f.min].forEach((id) => { $(id).value = ""; });
+    if (!iso) {
+      syncDatetimeUI(key);
+      return;
+    }
+    const m = String(iso).match(
+      /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/
+    );
+    if (!m) {
+      // 無法分割時仍寫入 hidden，並提示
+      $(f.hidden).value = iso;
+      $(f.iso).textContent = iso;
+      $(f.iso).classList.remove("ok");
+      $(f.err).hidden = false;
+      $(f.err).textContent = "線上值無法拆解，請重新用下方欄位設定";
+      return;
+    }
+    $(f.y).value = m[1];
+    $(f.m).value = String(parseInt(m[2], 10));
+    $(f.d).value = String(parseInt(m[3], 10));
+    $(f.h).value = String(parseInt(m[4], 10));
+    $(f.min).value = String(parseInt(m[5], 10));
+    syncDatetimeUI(key);
+  }
+
+  function validateDatetimesForPublish() {
+    const { starts, ends } = syncAllDatetimes();
+    if (!starts.ok) return "開始時間格式有誤：" + starts.error;
+    if (!ends.ok) return "結束時間格式有誤：" + ends.error;
+    if (starts.iso && ends.iso && Date.parse(starts.iso) >= Date.parse(ends.iso)) {
+      return "結束時間必須晚於開始時間";
+    }
+    return null;
+  }
+
   function parseVersionParts(v) {
     return String(v || "")
       .trim()
@@ -102,6 +281,7 @@
   }
 
   function readForm() {
+    syncAllDatetimes();
     return {
       version: 1,
       updatedAt: new Date().toISOString(),
@@ -141,16 +321,30 @@
     $("annBody").value = ann.body || "";
     $("annCtaLabel").value = ann.ctaLabel || "";
     $("annCtaURL").value = ann.ctaURL || "";
-    $("annStarts").value = ann.startsAt || "";
-    $("annEnds").value = ann.endsAt || "";
+    fillDatetimeFromISO("starts", ann.startsAt || "");
+    fillDatetimeFromISO("ends", ann.endsAt || "");
     $("updMode").value = upd.mode || "off";
     $("updTarget").value = upd.targetVersion || "";
-    $("updStore").value = upd.storeURL || "";
+    $("updStore").value = upd.storeURL || CFG.defaultAppStoreURL || "";
     $("updTitle").value = upd.title || "";
     $("updMessage").value = upd.message || "";
     $("feedbackURL").value = cfg.feedbackFormURL || "https://forms.gle/tGECU4KmFZqs8DRD8";
     updatePreview();
     updateVersionHints();
+  }
+
+  function fillDefaultStoreURL() {
+    $("updStore").value = "";
+    $("updStore").value = CFG.defaultAppStoreURL || "https://apps.apple.com/app/id6790064657";
+  }
+
+  function togglePatVisibility() {
+    const input = $("pat");
+    const btn = $("patToggle");
+    const show = input.type === "password";
+    input.type = show ? "text" : "password";
+    btn.textContent = show ? "🙈" : "👁";
+    btn.setAttribute("aria-label", show ? "隱藏 PAT" : "顯示 PAT");
   }
 
   function willShowAnnouncement(ann) {
@@ -176,6 +370,8 @@
     const ann = cfg.announcement;
     box.innerHTML = "";
     box.classList.toggle("banner-mode", ann.style === "banner");
+    box.classList.toggle("modal-mode", ann.style === "modal");
+    box.classList.toggle("fullscreen-mode", ann.style === "fullscreen");
     if (stage) stage.classList.toggle("has-ann", willShowAnnouncement(ann));
 
     // 填日曆格（僅一次結構）
@@ -198,27 +394,31 @@
       return;
     }
 
+    const style = ann.style || "fullscreen";
     const card = document.createElement("div");
-    card.className = "ann-card";
+    card.className = "ann-card " + style;
     card.style.borderColor = accentBorder(ann.accent);
 
     const tag = document.createElement("div");
     tag.className = "tag";
-    tag.textContent = `公告 · ${ann.style}`;
+    tag.textContent = `公告 · ${style}`;
     tag.style.color = accentBorder(ann.accent);
     tag.style.background = accentBorder(ann.accent) + "33";
     card.appendChild(tag);
 
+    const bodyWrap = document.createElement("div");
+    bodyWrap.className = "ann-body";
     if (ann.title) {
       const h = document.createElement("h3");
       h.textContent = ann.title;
-      card.appendChild(h);
+      bodyWrap.appendChild(h);
     }
     if (ann.body) {
       const p = document.createElement("p");
       p.textContent = ann.body;
-      card.appendChild(p);
+      bodyWrap.appendChild(p);
     }
+    card.appendChild(bodyWrap);
 
     const row = document.createElement("div");
     row.className = "cta-row";
@@ -261,6 +461,12 @@
   }
 
   function downloadJSON() {
+    const dtError = validateDatetimesForPublish();
+    if (dtError) {
+      $("publishStatus").textContent = dtError;
+      $("publishStatus").className = "status err";
+      return;
+    }
     const blob = new Blob([JSON.stringify(readForm(), null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -296,6 +502,12 @@
     const token = ($("pat").value || "").trim();
     if (!token) {
       status.textContent = "請先貼上 GitHub PAT";
+      status.className = "status err";
+      return;
+    }
+    const dtError = validateDatetimesForPublish();
+    if (dtError) {
+      status.textContent = dtError;
       status.className = "status err";
       return;
     }
@@ -380,20 +592,43 @@
   $("loadBtn").addEventListener("click", fetchConfig);
   $("downloadBtn").addEventListener("click", downloadJSON);
   $("publishBtn").addEventListener("click", publish);
+  $("fillStoreBtn").addEventListener("click", fillDefaultStoreURL);
+  $("patToggle").addEventListener("click", togglePatVisibility);
   $("updTarget").addEventListener("input", updateVersionHints);
   $("updTarget").addEventListener("change", updateVersionHints);
 
   [
     "annEnabled", "annDismissible", "annId", "annStyle", "annAccent",
-    "annTitle", "annBody", "annCtaLabel", "annCtaURL", "annStarts", "annEnds"
+    "annTitle", "annBody", "annCtaLabel", "annCtaURL"
   ].forEach((id) => {
     $(id).addEventListener("input", updatePreview);
     $(id).addEventListener("change", updatePreview);
   });
 
+  const dtInputIds = [
+    "startsY", "startsM", "startsD", "startsH", "startsMin",
+    "endsY", "endsM", "endsD", "endsH", "endsMin"
+  ];
+  dtInputIds.forEach((id) => {
+    const el = $(id);
+    el.addEventListener("input", () => {
+      el.value = el.value.replace(/\D/g, "");
+      syncAllDatetimes();
+      updatePreview();
+    });
+    el.addEventListener("blur", () => {
+      syncAllDatetimes();
+      updatePreview();
+    });
+  });
+  document.querySelectorAll("[data-clear]").forEach((btn) => {
+    btn.addEventListener("click", () => clearDatetime(btn.getAttribute("data-clear")));
+  });
+
   initTheme();
   initAccordions();
   updateVersionHints();
+  syncAllDatetimes();
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     unlockUI();
     fetchConfig();

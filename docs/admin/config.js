@@ -5,6 +5,8 @@ window.STOCKCALENDAR_ADMIN = {
   passwordSha256: "241c11a93ddd70d72f7dad0f380ebb4ff19c4e1f6f3d8b0c89249ad661ce8884",
   /** 與 App MARKETING_VERSION／CFBundleShortVersionString 對齊（非 build 號） */
   currentAppVersion: "1.4",
+  /** 永久型 App Store 連結（以 App ID，避免地區／名稱變動） */
+  defaultAppStoreURL: "https://apps.apple.com/app/id6790064657",
   github: {
     owner: "jimmy77733",
     repo: "stockcalendar-config",

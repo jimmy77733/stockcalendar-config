@@ -5,7 +5,7 @@
   "update": {
     "mode": "soft",
     "targetVersion": "1.4",
-    "storeURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
+    "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可用",
     "message": "建議更新以獲得最新功能與修正。"
   },
@@ -17,7 +17,7 @@
     "body": "1234",
     "accent": "warning",
     "ctaLabel": "測試按鈕",
-    "ctaURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
+    "ctaURL": "https://apps.apple.com/app/id6790064657",
     "dismissible": true,
     "startsAt": null,
     "endsAt": null
