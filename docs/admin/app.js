@@ -462,7 +462,7 @@
 
     const tag = document.createElement("div");
     tag.className = "upd-tag";
-    tag.textContent = mode === "force" ? "強制更新 · force" : "版本提醒 · soft";
+    tag.textContent = mode === "force" ? "強制更新" : "版本提醒";
     card.appendChild(tag);
 
     const h = document.createElement("h3");
@@ -513,7 +513,7 @@
 
     const tag = document.createElement("div");
     tag.className = "tag";
-    tag.textContent = maintenance ? "維護中" : `公告 · ${style}`;
+    tag.textContent = maintenance ? "維護中" : "公告";
     tag.style.color = maintenance ? "#DC2626" : accentBorder(ann.accent);
     tag.style.background = maintenance ? "#DC262633" : accentBorder(ann.accent) + "33";
     card.appendChild(tag);

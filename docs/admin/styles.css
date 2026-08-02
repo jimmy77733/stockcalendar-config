@@ -283,7 +283,7 @@ textarea { min-height: 88px; resize: vertical; }
 .ann-layer.modal-mode {
   align-items: center;
   justify-content: center;
-  padding: 22px 28px;
+  padding: 16px 10px;
 }
 
 .ann-card {
@@ -299,8 +299,8 @@ textarea { min-height: 88px; resize: vertical; }
   background-color: #1a2e24;
 }
 .ann-card.modal {
-  width: 78%;
-  max-width: 240px;
+  width: 100%;
+  max-width: none;
   border-radius: 16px;
   padding: 14px;
   box-shadow: 0 16px 32px rgba(0,0,0,0.4);
