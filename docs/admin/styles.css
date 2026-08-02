@@ -93,6 +93,15 @@ h2 { font-size: 1.05rem; margin: 0; }
   justify-content: space-between;
   gap: 10px;
 }
+.panel.collapsed .panel-body { display: none; }
+.panel.collapsed .panel-head { padding-bottom: 14px; }
+.panel-toggle .chev-icon {
+  display: block;
+  transition: transform 0.2s ease;
+}
+.panel.collapsed .panel-toggle .chev-icon {
+  transform: rotate(-90deg);
+}
 
 .card-body {
   padding: 12px 18px 18px;
@@ -297,11 +306,11 @@ textarea { min-height: 88px; resize: vertical; }
   padding: 16px;
   color: #fff;
   box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-  border: 2px solid rgba(22,163,74,0.55);
+  border: none;
   background:
-    linear-gradient(180deg, rgba(15,23,42,0.28), rgba(15,23,42,0.58)),
+    linear-gradient(180deg, rgba(40,28,16,0.28), rgba(40,28,16,0.58)),
     url("./assets/announcement-bg.jpg") center / cover no-repeat;
-  background-color: #1a2e24;
+  background-color: #E8DFD2;
 }
 .ann-card.modal {
   width: 100%;
@@ -320,7 +329,7 @@ textarea { min-height: 88px; resize: vertical; }
   flex-direction: column;
   box-shadow: 0 8px 20px rgba(0,0,0,0.28);
   background:
-    linear-gradient(180deg, rgba(15,23,42,0.34), rgba(15,23,42,0.66)),
+    linear-gradient(180deg, rgba(40,28,16,0.34), rgba(40,28,16,0.66)),
     url("./assets/announcement-bg.jpg") center / cover no-repeat;
 }
 .ann-card.fullscreen .ann-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
@@ -331,8 +340,11 @@ textarea { min-height: 88px; resize: vertical; }
 }
 .ann-card .tag {
   display: inline-block; font-size: 0.68rem; font-weight: 700;
-  background: rgba(22,163,74,0.2); color: #4ADE80;
+  background: rgba(139,105,20,0.85); color: #fff;
   padding: 3px 8px; border-radius: 999px; margin-bottom: 8px;
+}
+.ann-card.maintenance .tag {
+  background: rgba(220,38,38,0.9);
 }
 .ann-card h3 { margin: 0 0 6px; font-size: 1.05rem; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 .ann-card.fullscreen h3 { font-size: 1.25rem; }
@@ -346,7 +358,7 @@ textarea { min-height: 88px; resize: vertical; }
   font-size: 0.75rem; font-weight: 700;
   cursor: pointer; border: none; appearance: none;
 }
-.ann-card .cta.primary { background: #16A34A; color: #fff; }
+.ann-card .cta.primary { background: #8B6914; color: #fff; }
 .ann-card .cta.ghost { background: rgba(0,0,0,0.28); color: #fff; }
 .phone-empty {
   color: #64748B;
@@ -485,18 +497,18 @@ textarea { min-height: 88px; resize: vertical; }
 }
 
 .upd-card {
-  width: 86%;
-  max-width: 260px;
+  width: 100%;
   border-radius: 16px;
   padding: 16px;
-  background: #fff;
-  color: #0F172A;
+  color: #fff;
   box-shadow: 0 14px 30px rgba(0,0,0,0.28);
-  border: 1px solid rgba(15,23,42,0.08);
+  border: none;
+  background:
+    linear-gradient(180deg, rgba(40,28,16,0.30), rgba(40,28,16,0.58)),
+    url("./assets/announcement-bg.jpg") center / cover no-repeat;
+  background-color: #E8DFD2;
 }
-.upd-card.force {
-  border: 2px solid #DC2626;
-}
+.upd-card.force { border: none; }
 .upd-card .upd-tag {
   display: inline-block;
   font-size: 0.65rem;
@@ -504,23 +516,23 @@ textarea { min-height: 88px; resize: vertical; }
   padding: 3px 8px;
   border-radius: 999px;
   margin-bottom: 8px;
-  background: #ECFDF5;
-  color: #166534;
+  background: rgba(139,105,20,0.85);
+  color: #fff;
 }
 .upd-card.force .upd-tag {
-  background: #FEF2F2;
-  color: #B91C1C;
+  background: rgba(220,38,38,0.9);
+  color: #fff;
 }
-.upd-card h3 { margin: 0 0 6px; font-size: 1rem; }
-.upd-card p { margin: 0; font-size: 0.8rem; line-height: 1.4; color: #475569; }
+.upd-card h3 { margin: 0 0 6px; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
+.upd-card p { margin: 0; font-size: 0.8rem; line-height: 1.4; color: rgba(255,255,255,0.92); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 .upd-card .cta-row { display: flex; gap: 8px; margin-top: 14px; }
 .upd-card .cta {
   flex: 1; text-align: center; padding: 9px 6px; border-radius: 10px;
   font-size: 0.75rem; font-weight: 700; cursor: pointer; border: none;
 }
-.upd-card .cta.primary { background: #16A34A; color: #fff; }
+.upd-card .cta.primary { background: #8B6914; color: #fff; }
 .upd-card.force .cta.primary { background: #DC2626; }
-.upd-card .cta.ghost { background: #F1F5F9; color: #334155; }
+.upd-card .cta.ghost { background: rgba(0,0,0,0.28); color: #fff; }
 
 /* remove old dark phone-body rules if unused */
 .phone-appbar, .phone-body { display: none; }

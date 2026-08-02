@@ -319,7 +319,7 @@
         style: $("annStyle").value,
         title: ($("annTitle").value || "").trim(),
         body: ($("annBody").value || "").trim(),
-        accent: $("annAccent").value,
+        accent: "brand",
         ctaLabel: emptyToNull($("annCtaLabel").value),
         ctaURL: emptyToNull($("annCtaURL").value),
         dismissible: !$("annMaintenance").checked,
@@ -336,7 +336,8 @@
     $("annMaintenance").checked = ann.dismissible === false;
     $("annId").value = ann.id || "";
     $("annStyle").value = ann.style || "fullscreen";
-    $("annAccent").value = ann.accent || "brand";
+    // accent 欄位保留相容，後台已移除強調色設定
+    void (ann.accent);
     $("annTitle").value = ann.title || "";
     $("annBody").value = ann.body || "";
     $("annCtaLabel").value = ann.ctaLabel || "";
@@ -393,13 +394,8 @@
     return compareVersion(current, target) < 0;
   }
 
-  function accentBorder(accent) {
-    switch ((accent || "").toLowerCase()) {
-      case "warning": return "#F59E0B";
-      case "danger": return "#F87171";
-      case "info": return "#3B82F6";
-      default: return "#16A34A";
-    }
+  function accentBorder() {
+    return "#8B6914";
   }
 
   function ensureCalGrid() {
@@ -518,13 +514,12 @@
     const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
     const card = document.createElement("div");
     card.className = "ann-card " + style + (maintenance ? " maintenance" : "");
-    card.style.borderColor = accentBorder(ann.accent);
+    // 無邊框
+    card.style.border = "none";
 
     const tag = document.createElement("div");
     tag.className = "tag";
     tag.textContent = maintenance ? "維護中" : "公告";
-    tag.style.color = maintenance ? "#DC2626" : accentBorder(ann.accent);
-    tag.style.background = maintenance ? "#DC262633" : accentBorder(ann.accent) + "33";
     card.appendChild(tag);
 
     const bodyWrap = document.createElement("div");
@@ -547,7 +542,6 @@
       const cta = document.createElement("button");
       cta.type = "button";
       cta.className = "cta primary";
-      cta.style.background = accentBorder(ann.accent);
       cta.textContent = ann.ctaLabel;
       cta.addEventListener("click", () => {
         openExternal((ann.ctaURL || "").trim());
@@ -796,7 +790,7 @@
   $("updTarget").addEventListener("change", updateVersionHints);
 
   [
-    "annEnabled", "annMaintenance", "annId", "annStyle", "annAccent",
+    "annEnabled", "annMaintenance", "annId", "annStyle",
     "annTitle", "annBody", "annCtaLabel", "annCtaURL",
     "updMode", "updTarget", "updStore", "updTitle", "updMessage"
   ].forEach((id) => {
@@ -831,7 +825,26 @@
     btn.addEventListener("click", () => clearDatetime(btn.getAttribute("data-clear")));
   });
 
+  function initCollapsiblePanels() {
+    document.querySelectorAll("[data-collapsible]").forEach((panel) => {
+      const btn = panel.querySelector(".panel-toggle");
+      if (!btn) return;
+      const key = "sc_admin_panel_" + (panel.getAttribute("data-panel") || "");
+      const saved = sessionStorage.getItem(key);
+      if (saved === "0") {
+        panel.classList.add("collapsed");
+        btn.setAttribute("aria-expanded", "false");
+      }
+      btn.addEventListener("click", () => {
+        const collapsed = panel.classList.toggle("collapsed");
+        btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+        sessionStorage.setItem(key, collapsed ? "0" : "1");
+      });
+    });
+  }
+
   initTheme();
+  initCollapsiblePanels();
   updateVersionHints();
   syncAllDatetimes();
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
