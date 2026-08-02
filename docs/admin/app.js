@@ -1335,9 +1335,17 @@
         }
       }
 
-      status.textContent = "已發布 app-config 與 ID 庫。GitHub Pages 可能需數分鐘才生效。";
+      status.textContent = "已發布，正在載入最新版…";
       status.className = "status ok";
       persistPatToSession();
+      // 立即套用本次寫入內容（Pages 可能尚未更新；避免載到舊快取）
+      fillForm(cfg);
+      const loadStatus = $("loadStatus");
+      if (loadStatus) {
+        loadStatus.textContent = "已載入本次發布內容";
+        loadStatus.className = "status ok";
+      }
+      status.textContent = "已發布 app-config 與 ID 庫，並載入最新版。對外 Pages 可能需數分鐘生效。";
     } catch (e) {
       status.textContent = "發布錯誤：" + e.message;
       status.className = "status err";
