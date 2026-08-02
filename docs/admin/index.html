@@ -11,8 +11,7 @@
   <div class="shell">
     <div id="gate" class="card gate">
       <h1>股帳曆｜公告配送站</h1>
-      <p class="sub">站門密碼僅隱藏操作介面；寫入需 GitHub PAT。</p>
-      <input id="gatePassword" type="password" placeholder="站門密碼" autocomplete="current-password" />
+      <input id="gatePassword" type="password" placeholder="密碼" autocomplete="current-password" />
       <button class="btn" id="gateBtn" type="button">進入</button>
       <p id="gateStatus" class="status"></p>
     </div>
@@ -20,7 +19,7 @@
     <div id="app" class="hidden">
       <div class="topbar">
         <div>
-          <h1>股帳曆｜公告配送站</h1>
+          <h1>股帳曆｜公告推播站</h1>
           <p class="sub">編輯後發布會寫入 <code>docs/app-config.json</code>（GitHub Pages）。App：先版本更新，再公告；維護中會擋住操作。</p>
         </div>
         <div class="actions">
@@ -31,7 +30,7 @@
 
       <div class="card toolbar-card">
         <div class="card-body toolbar">
-          <button class="btn secondary" type="button" id="loadBtn">載入線上版</button>
+          <button class="btn secondary" type="button" id="loadBtn">載入最新版</button>
           <button class="btn secondary" type="button" id="downloadBtn">下載 JSON</button>
           <span id="loadStatus" class="status"></span>
         </div>
