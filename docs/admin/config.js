@@ -2,7 +2,7 @@
 // Default gate password plaintext: stockcalendar
 // Rotate: await sha256Hex('new-password') in the browser console, paste here.
 window.STOCKCALENDAR_ADMIN = {
-  passwordSha256: "241c11a93ddd70d72f7dad0f380ebb4ff19c4e1f6f3d8b0c89249ad661ce8884",
+  passwordSha256: "dc2b88d86d4327e61d52fc737d5a2eba53eb04bd7ce34e3a74805a267c4b72e8",
   /** 與 App MARKETING_VERSION／CFBundleShortVersionString 對齊（非 build 號） */
   currentAppVersion: "1.4",
   /** 永久型 App Store 連結（以 App ID，避免地區／名稱變動） */
