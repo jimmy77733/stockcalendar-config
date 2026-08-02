@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T09:00:30.824Z",
+  "updatedAt": "2026-08-02T09:04:45.844Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "off",
@@ -11,15 +11,15 @@
   },
   "announcement": {
     "enabled": true,
-    "id": "test-2026-08-02-b",
+    "id": "test-2026-08-02-c",
     "style": "modal",
     "title": "測試公告2",
-    "body": "若你看得到這段，遠端公告正常。",
+    "body": "1234",
     "accent": "warning",
     "ctaLabel": "測試按鈕",
     "ctaURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
     "dismissible": true,
-    "startsAt": null,
+    "startsAt": "123",
     "endsAt": null
   }
 }
