@@ -836,9 +836,9 @@
   function buildAnnouncementCard(ann, pageIndex, pageCount) {
     const maintenance = ann.dismissible === false;
     const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
-    const fill = maintenance || style === "fullscreen";
+    // 僅維護中真正鋪滿手機預覽；一般 fullscreen 仍是內縮卡片
     const wrap = document.createElement("div");
-    wrap.className = "ann-preview-wrap" + (fill ? " is-fill" : "");
+    wrap.className = "ann-preview-wrap" + (maintenance ? " is-fill" : "");
 
     const card = document.createElement("div");
     card.className = "ann-card " + style + (maintenance ? " maintenance" : "");

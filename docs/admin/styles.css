@@ -368,7 +368,7 @@ textarea { min-height: 88px; resize: vertical; }
 .home-tabbar .on { color: #166534; font-weight: 800; }
 .home-dim {
   position: absolute; inset: 0;
-  background: rgba(15, 23, 42, 0.28);
+  background: rgba(15, 23, 42, 0.45);
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -380,14 +380,19 @@ textarea { min-height: 88px; resize: vertical; }
   display: flex; align-items: center; justify-content: center;
   padding: 14px;
   z-index: 2;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .ann-layer.banner-mode { align-items: flex-end; padding-bottom: 52px; }
+/* fullscreen 與 App 一致：保留遮罩邊距，卡片近滿但不整頁塗滿 */
 .ann-layer.fullscreen-mode {
   align-items: stretch;
-  padding: 0;
+  justify-content: stretch;
+  padding: 10px 8px 14px;
 }
 .ann-layer.fullscreen-mode:has(.ann-card.maintenance) {
   padding: 0;
+  align-items: stretch;
 }
 .ann-layer.modal-mode {
   align-items: center;
@@ -403,17 +408,23 @@ textarea { min-height: 88px; resize: vertical; }
   box-shadow: 0 12px 28px rgba(0,0,0,0.35);
   border: none;
   background: #5A4636;
+  max-height: 100%;
+  box-sizing: border-box;
 }
 .ann-card.modal {
   width: 100%;
   max-width: none;
+  height: auto;
   border-radius: 16px;
   padding: 14px;
   box-shadow: 0 16px 32px rgba(0,0,0,0.4);
 }
 .ann-card.fullscreen {
   width: 100%;
-  height: 100%;
+  /* 近滿版，但仍是「卡片」；真正滿版僅維護中 */
+  height: auto;
+  min-height: 72%;
+  max-height: 100%;
   max-width: none;
   border-radius: 22px;
   padding: 18px 16px;
@@ -422,7 +433,13 @@ textarea { min-height: 88px; resize: vertical; }
   box-shadow: 0 8px 20px rgba(0,0,0,0.28);
   background: #5A4636;
 }
-.ann-card.fullscreen .ann-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.ann-card.fullscreen .ann-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
 .ann-card.banner {
   width: 100%;
   border-radius: 14px;
@@ -772,18 +789,27 @@ textarea { min-height: 88px; resize: vertical; }
 
 .ann-preview-wrap {
   width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   min-width: 0;
+  max-height: 100%;
+  box-sizing: border-box;
 }
 .ann-preview-wrap.is-fill {
+  flex: 1 1 auto;
   height: 100%;
-  flex: 1;
+  min-height: 0;
+  max-height: 100%;
+}
+.ann-preview-wrap.is-fill > .ann-card:not(.maintenance) {
+  flex: 1 1 auto;
   min-height: 0;
 }
-.ann-preview-wrap.is-fill > .ann-card {
+.ann-preview-wrap.is-fill > .ann-card.maintenance {
   flex: 1;
+  height: 100%;
   min-height: 0;
 }
 .ann-never-again {
@@ -801,6 +827,7 @@ textarea { min-height: 88px; resize: vertical; }
 .ann-layer.banner-mode .ann-preview-wrap {
   height: auto;
   flex: 0 1 auto;
+  max-height: 85%;
 }
 .ann-page-label {
   font-size: 0.72rem;
