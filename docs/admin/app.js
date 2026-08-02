@@ -322,7 +322,7 @@
         accent: $("annAccent").value,
         ctaLabel: emptyToNull($("annCtaLabel").value),
         ctaURL: emptyToNull($("annCtaURL").value),
-        dismissible: $("annDismissible").checked,
+        dismissible: !$("annMaintenance").checked,
         startsAt: emptyToNull($("annStarts").value),
         endsAt: emptyToNull($("annEnds").value)
       }
@@ -333,7 +333,7 @@
     const ann = cfg.announcement || {};
     const upd = cfg.update || {};
     $("annEnabled").checked = !!ann.enabled;
-    $("annDismissible").checked = ann.dismissible !== false;
+    $("annMaintenance").checked = ann.dismissible === false;
     $("annId").value = ann.id || "";
     $("annStyle").value = ann.style || "fullscreen";
     $("annAccent").value = ann.accent || "brand";
@@ -416,6 +416,12 @@
   function resolvePreviewPhase(cfg) {
     const showUpd = willShowUpdate(cfg.update);
     const showAnn = willShowAnnouncement(cfg.announcement);
+    const maintenance = showAnn && cfg.announcement.dismissible === false;
+    // 維護中：直接擋在公告，略過更新預覽步驟
+    if (maintenance) {
+      if (previewPhase === "done") return "done";
+      return "announcement";
+    }
     if (previewPhase === "auto") {
       if (showUpd) return "update";
       if (showAnn) return "announcement";
@@ -438,9 +444,10 @@
     if (phase === "update") {
       hint.textContent = "步驟 1／2：版本更新（點按鈕可開連結／略過後看公告）";
     } else if (phase === "announcement") {
-      hint.textContent = showUpd
-        ? "步驟 2／2：公告（點 CTA 可開啟連結）"
-        : "目前：公告（點 CTA 可開啟連結）";
+      const maint = cfg.announcement && cfg.announcement.dismissible === false;
+      hint.textContent = maint
+        ? "維護中：無法關閉，使用者被擋在公告外（僅 CTA 可點）"
+        : (showUpd ? "步驟 2／2：公告（點 CTA 可開啟連結）" : "目前：公告（點 CTA 可開啟連結）");
     } else if (!showUpd && !showAnn) {
       hint.textContent = "目前不會顯示更新或公告（可調高 targetVersion 或啟用公告）";
     } else {
@@ -498,16 +505,17 @@
   }
 
   function buildAnnouncementCard(ann) {
-    const style = ann.style || "fullscreen";
+    const maintenance = ann.dismissible === false;
+    const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
     const card = document.createElement("div");
-    card.className = "ann-card " + style;
+    card.className = "ann-card " + style + (maintenance ? " maintenance" : "");
     card.style.borderColor = accentBorder(ann.accent);
 
     const tag = document.createElement("div");
     tag.className = "tag";
-    tag.textContent = `公告 · ${style}`;
-    tag.style.color = accentBorder(ann.accent);
-    tag.style.background = accentBorder(ann.accent) + "33";
+    tag.textContent = maintenance ? "維護中" : `公告 · ${style}`;
+    tag.style.color = maintenance ? "#DC2626" : accentBorder(ann.accent);
+    tag.style.background = maintenance ? "#DC262633" : accentBorder(ann.accent) + "33";
     card.appendChild(tag);
 
     const bodyWrap = document.createElement("div");
@@ -537,7 +545,7 @@
       });
       row.appendChild(cta);
     }
-    if (ann.dismissible) {
+    if (!maintenance && ann.dismissible) {
       const close = document.createElement("button");
       close.type = "button";
       close.className = "cta ghost";
@@ -577,7 +585,8 @@
 
     if (phase === "announcement" && showAnn) {
       if (stage) stage.classList.add("has-ann");
-      const style = cfg.announcement.style || "fullscreen";
+      const maintenance = cfg.announcement.dismissible === false;
+      const style = maintenance ? "fullscreen" : (cfg.announcement.style || "fullscreen");
       box.classList.toggle("banner-mode", style === "banner");
       box.classList.toggle("modal-mode", style === "modal");
       box.classList.toggle("fullscreen-mode", style === "fullscreen");
@@ -678,6 +687,20 @@
       status.className = "status err";
       return;
     }
+    if ($("annMaintenance").checked) {
+      if (!cfg.announcement.enabled) {
+        status.textContent = "維護中需勾選「啟用公告」";
+        status.className = "status err";
+        return;
+      }
+      const t = (cfg.announcement.title || "").trim();
+      const b = (cfg.announcement.body || "").trim();
+      if (!t && !b) {
+        status.textContent = "維護中請填寫公告標題或內文，否則使用者看不到阻擋畫面";
+        status.className = "status err";
+        return;
+      }
+    }
     status.textContent = "發布中…";
     status.className = "status";
 
@@ -763,7 +786,7 @@
   $("updTarget").addEventListener("change", updateVersionHints);
 
   [
-    "annEnabled", "annDismissible", "annId", "annStyle", "annAccent",
+    "annEnabled", "annMaintenance", "annId", "annStyle", "annAccent",
     "annTitle", "annBody", "annCtaLabel", "annCtaURL",
     "updMode", "updTarget", "updStore", "updTitle", "updMessage"
   ].forEach((id) => {
@@ -799,7 +822,6 @@
   });
 
   initTheme();
-  initAccordions();
   updateVersionHints();
   syncAllDatetimes();
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
