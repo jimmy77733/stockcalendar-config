@@ -174,41 +174,95 @@ textarea { min-height: 96px; resize: vertical; }
   display: flex;
   flex-direction: column;
 }
+.phone-screen--light { background: #E8F5EC; }
 .phone-status {
   height: 28px;
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 16px 0;
   color: #fff; font-size: 0.65rem; font-weight: 600; opacity: 0.85;
+  flex-shrink: 0;
 }
-.phone-appbar {
-  padding: 8px 14px 6px;
-  color: rgba(255,255,255,0.7);
-  font-size: 0.7rem;
-  text-align: center;
-}
-.phone-body {
+.phone-status--light { color: #0F172A; opacity: 0.75; }
+
+.home-stage {
   flex: 1;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(22,163,74,0.18), transparent 50%),
-    linear-gradient(180deg, #0F141C, #0A0E14);
+  min-height: 0;
+  overflow: hidden;
 }
+.home-mock {
+  position: absolute; inset: 0;
+  padding: 6px 10px 0;
+  display: flex; flex-direction: column; gap: 6px;
+  pointer-events: none;
+  color: #0F172A;
+}
+.home-title { font-size: 1.15rem; font-weight: 800; }
+.home-pills { display: flex; gap: 4px; }
+.home-pills span {
+  font-size: 0.62rem; padding: 3px 8px; border-radius: 999px;
+  background: rgba(255,255,255,0.7); color: #64748B; font-weight: 600;
+}
+.home-pills span.on { background: #166534; color: #fff; }
+.home-month { font-size: 0.72rem; font-weight: 700; text-align: center; margin: 2px 0; }
+.home-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.home-card {
+  background: #fff; border-radius: 10px; padding: 8px;
+  font-size: 0.62rem; font-weight: 700; box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+}
+.home-card .dots { letter-spacing: 2px; color: #94A3B8; font-size: 0.9rem; }
+.home-card small { color: #94A3B8; font-weight: 500; }
+.home-cal {
+  flex: 1; background: #fff; border-radius: 12px; padding: 8px;
+  box-shadow: 0 1px 4px rgba(15,23,42,0.06); min-height: 0;
+}
+.home-cal-head {
+  display: grid; grid-template-columns: repeat(7, 1fr);
+  font-size: 0.52rem; color: #94A3B8; text-align: center; margin-bottom: 4px;
+}
+.home-cal-grid {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
+}
+.home-cal-grid i {
+  aspect-ratio: 1; border-radius: 6px; background: #F1F5F9;
+  font-style: normal; font-size: 0.55rem; display: grid; place-items: center;
+  color: #64748B;
+}
+.home-cal-grid i.on {
+  outline: 1.5px solid #166534; background: #ECFDF5; font-weight: 700; color: #166534;
+}
+.home-tabbar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  background: rgba(220, 245, 228, 0.95);
+  margin: 0 -10px; padding: 8px 6px 12px;
+  font-size: 0.52rem; text-align: center; color: #64748B; font-weight: 600;
+}
+.home-tabbar .on { color: #166534; font-weight: 800; }
+.home-dim {
+  position: absolute; inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.home-stage.has-ann .home-dim { opacity: 1; }
+
+.ann-layer {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px;
+  z-index: 2;
+}
+.ann-layer.banner-mode { align-items: flex-end; padding-bottom: 52px; }
+
 .ann-card {
   width: 100%;
   border-radius: 18px;
   padding: 16px;
-  background: rgba(15, 20, 28, 0.94);
+  background: rgba(15, 20, 28, 0.96);
   border: 1.5px solid rgba(22,163,74,0.45);
   color: #fff;
   box-shadow: 0 12px 28px rgba(0,0,0,0.35);
-}
-.ann-card.banner {
-  align-self: flex-end;
-  margin-top: auto;
 }
 .ann-card .tag {
   display: inline-block; font-size: 0.68rem; font-weight: 700;
@@ -225,14 +279,17 @@ textarea { min-height: 96px; resize: vertical; }
 .ann-card .cta.primary { background: #16A34A; color: #fff; }
 .ann-card .cta.ghost { background: rgba(255,255,255,0.12); color: #fff; }
 .phone-empty {
-  color: var(--text2);
-  font-size: 0.85rem;
+  color: #64748B;
+  font-size: 0.8rem;
   text-align: center;
-  padding: 20px;
-  background: rgba(255,255,255,0.04);
+  padding: 16px 14px;
+  background: rgba(255,255,255,0.72);
   border-radius: 14px;
-  border: 1px dashed rgba(255,255,255,0.15);
+  border: 1px dashed rgba(100,116,139,0.35);
 }
+
+/* remove old dark phone-body rules if unused */
+.phone-appbar, .phone-body { display: none; }
 
 @media (max-width: 720px) {
   .shell { width: 94%; }

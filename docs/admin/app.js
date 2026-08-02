@@ -172,8 +172,24 @@
   function updatePreview() {
     const cfg = readForm();
     const box = $("annPreview");
+    const stage = box.closest(".home-stage");
     const ann = cfg.announcement;
     box.innerHTML = "";
+    box.classList.toggle("banner-mode", ann.style === "banner");
+    if (stage) stage.classList.toggle("has-ann", willShowAnnouncement(ann));
+
+    // 填日曆格（僅一次結構）
+    const grid = document.querySelector(".home-cal-grid");
+    if (grid && !grid.dataset.ready) {
+      for (let d = 1; d <= 31; d++) {
+        const cell = document.createElement("i");
+        cell.textContent = String(d);
+        if (d === 2) cell.className = "on";
+        grid.appendChild(cell);
+      }
+      grid.dataset.ready = "1";
+    }
+
     if (!willShowAnnouncement(ann)) {
       const empty = document.createElement("div");
       empty.className = "phone-empty";
@@ -183,7 +199,7 @@
     }
 
     const card = document.createElement("div");
-    card.className = "ann-card" + (ann.style === "banner" ? " banner" : "");
+    card.className = "ann-card";
     card.style.borderColor = accentBorder(ann.accent);
 
     const tag = document.createElement("div");
@@ -260,6 +276,21 @@
     return btoa(binary);
   }
 
+  async function fetchLatestSha(apiBase, branch, token) {
+    const metaRes = await fetch(`${apiBase}?ref=${encodeURIComponent(branch)}`, {
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${token}`
+      }
+    });
+    if (metaRes.ok) {
+      const meta = await metaRes.json();
+      return meta.sha;
+    }
+    if (metaRes.status === 404) return null;
+    throw new Error("讀取遠端檔案失敗：" + metaRes.status);
+  }
+
   async function publish() {
     const status = $("publishStatus");
     const token = ($("pat").value || "").trim();
@@ -279,37 +310,13 @@
 
     const { owner, repo, path, branch } = CFG.github;
     const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-    let sha;
-    try {
-      const metaRes = await fetch(`${apiBase}?ref=${encodeURIComponent(branch)}`, {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (metaRes.ok) {
-        const meta = await metaRes.json();
-        sha = meta.sha;
-      } else if (metaRes.status !== 404) {
-        status.textContent = "讀取遠端檔案失敗：" + metaRes.status;
-        status.className = "status err";
-        return;
-      }
-    } catch (e) {
-      status.textContent = "網路錯誤：" + e.message;
-      status.className = "status err";
-      return;
-    }
+    const content = utf8ToBase64(JSON.stringify(cfg, null, 2) + "\n");
+    const message = ($("commitMsg").value || "").trim() || "chore: update app-config";
 
-    const body = {
-      message: ($("commitMsg").value || "").trim() || "chore: update app-config",
-      content: utf8ToBase64(JSON.stringify(cfg, null, 2) + "\n"),
-      branch
-    };
-    if (sha) body.sha = sha;
-
-    try {
-      const putRes = await fetch(apiBase, {
+    async function putOnce(sha) {
+      const body = { message, content, branch };
+      if (sha) body.sha = sha;
+      return fetch(apiBase, {
         method: "PUT",
         headers: {
           Accept: "application/vnd.github+json",
@@ -318,9 +325,23 @@
         },
         body: JSON.stringify(body)
       });
+    }
+
+    try {
+      let sha = await fetchLatestSha(apiBase, branch, token);
+      let putRes = await putOnce(sha);
+      // 409：遠端已變（例如剛發布過）→ 重抓 SHA 再試一次
+      if (putRes.status === 409) {
+        sha = await fetchLatestSha(apiBase, branch, token);
+        putRes = await putOnce(sha);
+      }
       if (!putRes.ok) {
         const errText = await putRes.text();
-        status.textContent = "發布失敗：" + putRes.status + " " + errText.slice(0, 180);
+        if (putRes.status === 409) {
+          status.textContent = "發布衝突（409）：檔案已被更新。請按「載入線上版」後再發布一次。";
+        } else {
+          status.textContent = "發布失敗：" + putRes.status + " " + errText.slice(0, 160);
+        }
         status.className = "status err";
         return;
       }
