@@ -37,170 +37,185 @@
         </div>
       </div>
 
-      <section class="card accordion" data-accordion>
-        <button type="button" class="accordion-head" aria-expanded="false">
-          <h2>公告（App 內醒目提示）</h2>
+      <section class="card accordion open" data-accordion>
+        <button type="button" class="accordion-head" aria-expanded="true">
+          <h2>版本更新與公告</h2>
           <span class="chev" aria-hidden="true">›</span>
         </button>
         <div class="card-body">
           <p class="hint">
-            <strong>啟用公告</strong>：關掉＝App 完全不顯示這則（即使有文字）。<br />
-            <strong>可關閉</strong>：開啟＝使用者可按「知道了」；關閉後依 ID 記住、同 ID 不再跳出。取消勾選＝無法關閉（慎用）。
+            App 顯示順序：先<strong>版本更新</strong>，關閉後再<strong>公告</strong>。兩者皆可在<strong>解鎖前</strong>出現。
+            右側預覽可點按按鈕／連結模擬實際流程。
           </p>
-          <div class="row">
-            <label class="check field"><input type="checkbox" id="annEnabled" /> 啟用公告</label>
-            <label class="check field"><input type="checkbox" id="annDismissible" checked /> 可關閉</label>
-          </div>
-          <div class="row">
-            <div class="field"><label>ID（關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
-            <div class="field">
-              <label>樣式</label>
-              <select id="annStyle">
-                <option value="fullscreen">fullscreen（極醒目）</option>
-                <option value="modal">modal</option>
-                <option value="banner">banner</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>強調色</label>
-              <select id="annAccent">
-                <option value="brand">brand 綠</option>
-                <option value="warning">warning 琥珀</option>
-                <option value="danger">danger 紅</option>
-                <option value="info">info 藍</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
-          </div>
-          <div class="row">
-            <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
-          </div>
-          <div class="row">
-            <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
-            <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
-          </div>
-          <div class="datetime-block">
-            <label>開始時間（選填）</label>
-            <p class="hint" style="margin:0 0 8px;">從何時開始顯示；全部留空＝立刻可顯示。時區固定台北＋08:00。</p>
-            <div class="datetime-grid" data-dt="starts">
-              <div class="dt-part"><span>年</span><input id="startsY" inputmode="numeric" maxlength="4" placeholder="2026" /></div>
-              <div class="dt-part"><span>月</span><input id="startsM" inputmode="numeric" maxlength="2" placeholder="08" /></div>
-              <div class="dt-part"><span>日</span><input id="startsD" inputmode="numeric" maxlength="2" placeholder="01" /></div>
-              <div class="dt-part"><span>時</span><input id="startsH" inputmode="numeric" maxlength="2" placeholder="09" /></div>
-              <div class="dt-part"><span>分</span><input id="startsMin" inputmode="numeric" maxlength="2" placeholder="00" /></div>
-              <button type="button" class="btn secondary dt-clear" data-clear="starts">清空</button>
-            </div>
-            <div class="dt-meta">
-              <code id="startsISO" class="dt-iso">（未設定）</code>
-              <span id="startsErr" class="dt-err" hidden></span>
-            </div>
-            <input type="hidden" id="annStarts" value="" />
-          </div>
 
-          <div class="datetime-block">
-            <label>結束時間（選填）</label>
-            <p class="hint" style="margin:0 0 8px;">過了這個時間就不顯示；全部留空＝不自動下架。</p>
-            <div class="datetime-grid" data-dt="ends">
-              <div class="dt-part"><span>年</span><input id="endsY" inputmode="numeric" maxlength="4" placeholder="2026" /></div>
-              <div class="dt-part"><span>月</span><input id="endsM" inputmode="numeric" maxlength="2" placeholder="08" /></div>
-              <div class="dt-part"><span>日</span><input id="endsD" inputmode="numeric" maxlength="2" placeholder="31" /></div>
-              <div class="dt-part"><span>時</span><input id="endsH" inputmode="numeric" maxlength="2" placeholder="23" /></div>
-              <div class="dt-part"><span>分</span><input id="endsMin" inputmode="numeric" maxlength="2" placeholder="59" /></div>
-              <button type="button" class="btn secondary dt-clear" data-clear="ends">清空</button>
-            </div>
-            <div class="dt-meta">
-              <code id="endsISO" class="dt-iso">（未設定）</code>
-              <span id="endsErr" class="dt-err" hidden></span>
-            </div>
-            <input type="hidden" id="annEnds" value="" />
-          </div>
-        </div>
-      </section>
-
-      <section class="card accordion" data-accordion>
-        <button type="button" class="accordion-head" aria-expanded="false">
-          <h2>預覽（iOS 外型）</h2>
-          <span class="chev" aria-hidden="true">›</span>
-        </button>
-        <div class="card-body">
-          <div class="phone-wrap">
-            <div class="phone">
-              <div class="phone-screen phone-screen--light">
-                <div class="phone-status phone-status--light"><span>9:41</span><span>▮▮▮</span></div>
-                <div class="home-stage">
-                  <div class="home-mock" aria-hidden="true">
-                    <div class="home-title">股帳曆</div>
-                    <div class="home-pills">
-                      <span>週</span><span class="on">月</span><span>年</span><span>全部</span>
-                    </div>
-                    <div class="home-month">2026 年 8 月</div>
-                    <div class="home-cards">
-                      <div class="home-card">損益總計<br /><span class="dots">····</span></div>
-                      <div class="home-card">月目標<br /><small>尚未設定目標</small></div>
-                    </div>
-                    <div class="home-cal">
-                      <div class="home-cal-head">日 一 二 三 四 五 六</div>
-                      <div class="home-cal-grid"></div>
-                    </div>
-                    <div class="home-tabbar">
-                      <span class="on">日曆</span><span>資產分析</span><span>資金帳戶</span><span>設定</span>
+          <div class="prompt-layout">
+            <div class="prompt-forms">
+              <div class="subpanel">
+                <h3 class="subpanel-title">① 版本更新提示</h3>
+                <div class="version-chip">
+                  版本格式：<strong>major.minor</strong>（例 <strong>1.4</strong>）
+                  · 目前 App 行銷版參考：<strong id="currentAppVersionLabel">—</strong>
+                </div>
+                <p class="hint">
+                  本機 <code>CFBundleShortVersionString</code> ＜ <code>targetVersion</code> 才會顯示。勿填 build 號。
+                </p>
+                <div class="row">
+                  <div class="field">
+                    <label>模式</label>
+                    <select id="updMode">
+                      <option value="off">off（關閉）</option>
+                      <option value="soft">soft（提醒，可略過）</option>
+                      <option value="force">force（強制，需商店已有該版）</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>目標版本 targetVersion</label>
+                    <input id="updTarget" placeholder="1.4" />
+                    <span class="hint" id="updTargetHint" style="margin:4px 0 0;"></span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label>App Store URL（選填）</label>
+                    <div class="inline-row">
+                      <input id="updStore" placeholder="https://apps.apple.com/app/id…" />
+                      <button class="btn secondary" type="button" id="fillStoreBtn" title="清空後帶入預設商店連結">帶入</button>
                     </div>
                   </div>
-                  <div class="home-dim"></div>
-                  <div class="ann-layer" id="annPreview">
-                    <div class="phone-empty">不顯示公告</div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>標題</label><input id="updTitle" /></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>訊息</label><textarea id="updMessage"></textarea></div>
+                </div>
+              </div>
+
+              <div class="subpanel">
+                <h3 class="subpanel-title">② 公告</h3>
+                <p class="hint">
+                  <strong>啟用公告</strong>：關掉＝完全不顯示。<br />
+                  <strong>可關閉</strong>：可按「知道了」；關閉後依 ID 記住。
+                </p>
+                <div class="row">
+                  <label class="check field"><input type="checkbox" id="annEnabled" /> 啟用公告</label>
+                  <label class="check field"><input type="checkbox" id="annDismissible" checked /> 可關閉</label>
+                </div>
+                <div class="row">
+                  <div class="field"><label>ID（關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
+                  <div class="field">
+                    <label>樣式</label>
+                    <select id="annStyle">
+                      <option value="fullscreen">fullscreen（極醒目）</option>
+                      <option value="modal">modal</option>
+                      <option value="banner">banner</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>強調色</label>
+                    <select id="annAccent">
+                      <option value="brand">brand 綠</option>
+                      <option value="warning">warning 琥珀</option>
+                      <option value="danger">danger 紅</option>
+                      <option value="info">info 藍</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
+                  <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
+                </div>
+
+                <div class="datetime-pair">
+                  <div class="datetime-block">
+                    <div class="dt-head">
+                      <label>開始時間</label>
+                      <button type="button" class="btn secondary dt-clear" data-clear="starts">清空</button>
+                    </div>
+                    <p class="hint dt-hint">留空＝立刻可顯示（台北＋08:00）</p>
+                    <div class="datetime-grid" data-dt="starts">
+                      <label class="dt-part">年<input id="startsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
+                      <label class="dt-part">月<input id="startsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
+                      <label class="dt-part">日<input id="startsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
+                      <span class="dt-sep" aria-hidden="true">·</span>
+                      <label class="dt-part">時<input id="startsH" inputmode="numeric" maxlength="2" placeholder="09" /></label>
+                      <span class="dt-colon" aria-hidden="true">:</span>
+                      <label class="dt-part">分<input id="startsMin" inputmode="numeric" maxlength="2" placeholder="00" /></label>
+                    </div>
+                    <div class="dt-meta">
+                      <code id="startsISO" class="dt-iso">（未設定）</code>
+                      <span id="startsErr" class="dt-err" hidden></span>
+                    </div>
+                    <input type="hidden" id="annStarts" value="" />
+                  </div>
+
+                  <div class="datetime-block">
+                    <div class="dt-head">
+                      <label>結束時間</label>
+                      <button type="button" class="btn secondary dt-clear" data-clear="ends">清空</button>
+                    </div>
+                    <p class="hint dt-hint">留空＝不自動下架</p>
+                    <div class="datetime-grid" data-dt="ends">
+                      <label class="dt-part">年<input id="endsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
+                      <label class="dt-part">月<input id="endsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
+                      <label class="dt-part">日<input id="endsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
+                      <span class="dt-sep" aria-hidden="true">·</span>
+                      <label class="dt-part">時<input id="endsH" inputmode="numeric" maxlength="2" placeholder="23" /></label>
+                      <span class="dt-colon" aria-hidden="true">:</span>
+                      <label class="dt-part">分<input id="endsMin" inputmode="numeric" maxlength="2" placeholder="59" /></label>
+                    </div>
+                    <div class="dt-meta">
+                      <code id="endsISO" class="dt-iso">（未設定）</code>
+                      <span id="endsErr" class="dt-err" hidden></span>
+                    </div>
+                    <input type="hidden" id="annEnds" value="" />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section class="card accordion" data-accordion>
-        <button type="button" class="accordion-head" aria-expanded="false">
-          <h2>版本更新提示</h2>
-          <span class="chev" aria-hidden="true">›</span>
-        </button>
-        <div class="card-body">
-          <div class="version-chip">
-            版本格式：<strong>major.minor</strong>（例 <strong>1.4</strong>）
-            · 目前 App 行銷版參考：<strong id="currentAppVersionLabel">—</strong>
-          </div>
-          <p class="hint">
-            App 會比較本機 <code>CFBundleShortVersionString</code> 與下方 <code>targetVersion</code>。
-            本機較舊才會跳出提醒／強制更新。請用相同維度（勿填 build 號如 4）。
-          </p>
-          <div class="row">
-            <div class="field">
-              <label>模式</label>
-              <select id="updMode">
-                <option value="off">off（關閉）</option>
-                <option value="soft">soft（提醒，可略過）</option>
-                <option value="force">force（強制，需商店已有該版）</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>目標版本 targetVersion</label>
-              <input id="updTarget" placeholder="1.4" />
-              <span class="hint" id="updTargetHint" style="margin:4px 0 0;"></span>
-            </div>
-            <div class="field">
-              <label>App Store URL（選填）</label>
-              <div class="inline-row">
-                <input id="updStore" placeholder="https://apps.apple.com/app/id…" />
-                <button class="btn secondary" type="button" id="fillStoreBtn" title="清空後帶入預設商店連結">帶入</button>
+            <div class="prompt-preview">
+              <div class="preview-toolbar">
+                <span class="preview-label">互動預覽</span>
+                <button type="button" class="btn secondary" id="previewResetBtn">重播流程</button>
               </div>
-              <span class="hint" style="margin:4px 0 0;">預設為永久 App ID 連結；按「帶入」會先清空再填入。</span>
+              <p class="hint preview-step-hint" id="previewStepHint">先更新 → 再公告</p>
+              <div class="phone-wrap">
+                <div class="phone">
+                  <div class="phone-screen phone-screen--light">
+                    <div class="phone-status phone-status--light"><span>9:41</span><span>▮▮▮</span></div>
+                    <div class="home-stage" id="previewStage">
+                      <div class="home-mock" aria-hidden="true">
+                        <div class="home-title">股帳曆</div>
+                        <div class="home-pills">
+                          <span>週</span><span class="on">月</span><span>年</span><span>全部</span>
+                        </div>
+                        <div class="home-month">2026 年 8 月</div>
+                        <div class="home-cards">
+                          <div class="home-card">損益總計<br /><span class="dots">····</span></div>
+                          <div class="home-card">月目標<br /><small>尚未設定目標</small></div>
+                        </div>
+                        <div class="home-cal">
+                          <div class="home-cal-head">日 一 二 三 四 五 六</div>
+                          <div class="home-cal-grid"></div>
+                        </div>
+                        <div class="home-tabbar">
+                          <span class="on">日曆</span><span>資產分析</span><span>資金帳戶</span><span>設定</span>
+                        </div>
+                      </div>
+                      <div class="home-dim"></div>
+                      <div class="ann-layer" id="annPreview"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="field"><label>標題</label><input id="updTitle" /></div>
-          </div>
-          <div class="row">
-            <div class="field"><label>訊息</label><textarea id="updMessage"></textarea></div>
           </div>
         </div>
       </section>
@@ -224,18 +239,24 @@
         </button>
         <div class="card-body">
           <p class="hint">
-            貼上 fine-grained PAT（此 repo 的 Contents 讀寫）。Token 只留在瀏覽器，不會寫進倉庫。<br />
-            <strong>Commit 說明</strong>：寫進 Git 歷史的這次變更留言（方便之後辨認「改了什麼」），不影響 App 顯示。
+            貼上 fine-grained PAT（此 repo 的 Contents 讀寫）。Token 只存在瀏覽器 Session，驗證成功後會保留到分頁關閉。<br />
+            <strong>Commit 說明</strong>：寫進 Git 歷史的這次變更留言，不影響 App 顯示。
           </p>
           <div class="row">
-            <div class="field">
+            <div class="field field-full">
               <label>GitHub PAT</label>
               <div class="inline-row">
                 <input id="pat" type="password" autocomplete="off" placeholder="github_pat_…" />
-                <button class="btn secondary icon-btn" type="button" id="patToggle" aria-label="顯示或隱藏 PAT">👁</button>
+                <button class="btn secondary icon-btn" type="button" id="patToggle" aria-label="顯示 PAT" title="顯示／隱藏">
+                  <svg class="eye-icon" id="patEyeIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7 1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+                  </svg>
+                </button>
               </div>
             </div>
-            <div class="field"><label>Commit 說明</label><input id="commitMsg" placeholder="chore: update app-config" /></div>
+          </div>
+          <div class="row">
+            <div class="field field-full"><label>Commit 說明</label><input id="commitMsg" placeholder="chore: update app-config" /></div>
           </div>
           <div class="actions">
             <button class="btn" type="button" id="publishBtn">驗證並發布</button>

@@ -330,6 +330,7 @@ textarea { min-height: 96px; resize: vertical; }
 .ann-card .cta {
   flex: 1; text-align: center; padding: 8px 6px; border-radius: 10px;
   font-size: 0.75rem; font-weight: 700;
+  cursor: pointer; border: none; appearance: none;
 }
 .ann-card .cta.primary { background: #16A34A; color: #fff; }
 .ann-card .cta.ghost { background: rgba(0,0,0,0.28); color: #fff; }
@@ -343,74 +344,186 @@ textarea { min-height: 96px; resize: vertical; }
   border: 1px dashed rgba(100,116,139,0.35);
 }
 
+.datetime-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 4px;
+}
 .datetime-block {
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  margin-bottom: 0;
+  padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--bg2);
 }
-.datetime-block > label {
-  display: block;
+.dt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-bottom: 2px;
-  color: var(--text);
-  font-size: 0.88rem;
 }
+.dt-head > label {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.dt-hint { margin: 0 0 8px !important; font-size: 0.72rem !important; }
 .datetime-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 4px;
   align-items: flex-end;
+  overflow-x: auto;
+  padding-bottom: 2px;
 }
 .dt-part {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.dt-part span {
-  font-size: 0.7rem;
+  gap: 2px;
+  flex: 0 0 auto;
+  font-size: 0.65rem;
   color: var(--text2);
   font-weight: 600;
 }
 .dt-part input {
-  width: 4.2rem;
+  width: 2.85rem;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  padding: 8px 4px;
+  font-size: 0.85rem;
 }
 .dt-part input.is-invalid {
   border-color: var(--danger);
   background: color-mix(in srgb, var(--danger) 8%, var(--input));
 }
-#startsY, #endsY { width: 5rem; }
-.dt-clear { height: 40px; padding: 0 12px; white-space: nowrap; }
+#startsY, #endsY { width: 3.5rem; }
+.dt-sep, .dt-colon {
+  color: var(--text2);
+  font-weight: 700;
+  padding-bottom: 10px;
+  flex: 0 0 auto;
+}
+.dt-clear {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
 .dt-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 12px;
+  gap: 6px 10px;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 .dt-iso {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   color: var(--text2);
   background: var(--input);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 4px 8px;
+  padding: 3px 7px;
+  word-break: break-all;
 }
 .dt-iso.ok { color: var(--accent); }
 .dt-err {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--danger);
   font-weight: 600;
 }
 
+.prompt-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
+.prompt-forms { min-width: 0; }
+.prompt-preview {
+  position: sticky;
+  top: 12px;
+}
+.subpanel {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  background: var(--card);
+}
+.subpanel-title {
+  margin: 0 0 8px;
+  font-size: 0.95rem;
+}
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.preview-label { font-weight: 700; font-size: 0.88rem; }
+.preview-step-hint { margin: 0 0 8px; }
+.field-full { flex: 1 1 100%; }
+
+.eye-icon { display: block; }
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upd-card {
+  width: 86%;
+  max-width: 260px;
+  border-radius: 16px;
+  padding: 16px;
+  background: #fff;
+  color: #0F172A;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.28);
+  border: 1px solid rgba(15,23,42,0.08);
+}
+.upd-card.force {
+  border: 2px solid #DC2626;
+}
+.upd-card .upd-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  background: #ECFDF5;
+  color: #166534;
+}
+.upd-card.force .upd-tag {
+  background: #FEF2F2;
+  color: #B91C1C;
+}
+.upd-card h3 { margin: 0 0 6px; font-size: 1rem; }
+.upd-card p { margin: 0; font-size: 0.8rem; line-height: 1.4; color: #475569; }
+.upd-card .cta-row { display: flex; gap: 8px; margin-top: 14px; }
+.upd-card .cta {
+  flex: 1; text-align: center; padding: 9px 6px; border-radius: 10px;
+  font-size: 0.75rem; font-weight: 700; cursor: pointer; border: none;
+}
+.upd-card .cta.primary { background: #16A34A; color: #fff; }
+.upd-card.force .cta.primary { background: #DC2626; }
+.upd-card .cta.ghost { background: #F1F5F9; color: #334155; }
+
 /* remove old dark phone-body rules if unused */
 .phone-appbar, .phone-body { display: none; }
 
+@media (max-width: 960px) {
+  .prompt-layout { grid-template-columns: 1fr; }
+  .prompt-preview { position: static; }
+}
 @media (max-width: 720px) {
   .shell { width: 94%; }
+  .datetime-pair { grid-template-columns: 1fr; }
 }
 
 @media (prefers-color-scheme: dark) {

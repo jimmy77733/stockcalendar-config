@@ -1,7 +1,14 @@
 (() => {
   const CFG = window.STOCKCALENDAR_ADMIN;
   const SESSION_KEY = "sc_admin_unlocked";
+  const PAT_SESSION_KEY = "sc_admin_pat";
   const THEME_KEY = "sc_admin_theme";
+
+  /** 預覽流程：update → announcement → done */
+  let previewPhase = "auto";
+
+  const EYE_OPEN = '<svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7 1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>';
+  const EYE_OFF = '<svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 6.5c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-3.89-6-7-11-7-1.4 0-2.74.25-3.98.7l2.16 2.16c.57-.23 1.18-.36 1.83-.36zM3.27 2.5 2 3.77l2.1 2.1C2.61 7.16 1.28 8.88.42 11c1.73 3.89 6 7 11 7 1.55 0 3.03-.3 4.38-.84l2.42 2.42L19.5 18.3 3.27 2.5zM12 16.5c-2.76 0-5-2.24-5-5 0-.77.18-1.5.49-2.14l1.57 1.57c-.03.18-.06.37-.06.57a3 3 0 0 0 3 3c.2 0 .39-.03.57-.06l1.57 1.57c-.64.31-1.37.49-2.14.49zm2.97-5.33a2.97 2.97 0 0 0-2.64-2.64l2.64 2.64z"/></svg>';
 
   const $ = (id) => document.getElementById(id);
 
@@ -36,13 +43,26 @@
     $("gate").classList.add("hidden");
     $("app").classList.remove("hidden");
     sessionStorage.setItem(SESSION_KEY, "1");
+    restorePatFromSession();
   }
 
   function lockUI() {
     $("gate").classList.remove("hidden");
     $("app").classList.add("hidden");
     sessionStorage.removeItem(SESSION_KEY);
+    // PAT 留在 Session，下次進站門後自動還原
     $("pat").value = "";
+  }
+
+  function restorePatFromSession() {
+    const saved = sessionStorage.getItem(PAT_SESSION_KEY) || "";
+    if (saved) $("pat").value = saved;
+  }
+
+  function persistPatToSession() {
+    const token = ($("pat").value || "").trim();
+    if (token) sessionStorage.setItem(PAT_SESSION_KEY, token);
+    else sessionStorage.removeItem(PAT_SESSION_KEY);
   }
 
   function emptyToNull(s) {
@@ -329,6 +349,7 @@
     $("updTitle").value = upd.title || "";
     $("updMessage").value = upd.message || "";
     $("feedbackURL").value = cfg.feedbackFormURL || "https://forms.gle/tGECU4KmFZqs8DRD8";
+    previewPhase = "auto";
     updatePreview();
     updateVersionHints();
   }
@@ -343,7 +364,7 @@
     const btn = $("patToggle");
     const show = input.type === "password";
     input.type = show ? "text" : "password";
-    btn.textContent = show ? "🙈" : "👁";
+    btn.innerHTML = show ? EYE_OFF : EYE_OPEN;
     btn.setAttribute("aria-label", show ? "隱藏 PAT" : "顯示 PAT");
   }
 
@@ -352,6 +373,15 @@
     const t = (ann.title || "").trim();
     const b = (ann.body || "").trim();
     return !!(t || b);
+  }
+
+  function willShowUpdate(upd) {
+    const mode = (upd.mode || "off").toLowerCase();
+    if (mode === "off") return false;
+    const target = (upd.targetVersion || "").trim();
+    if (!target) return false;
+    const current = CFG.currentAppVersion || "0";
+    return compareVersion(current, target) < 0;
   }
 
   function accentBorder(accent) {
@@ -363,18 +393,7 @@
     }
   }
 
-  function updatePreview() {
-    const cfg = readForm();
-    const box = $("annPreview");
-    const stage = box.closest(".home-stage");
-    const ann = cfg.announcement;
-    box.innerHTML = "";
-    box.classList.toggle("banner-mode", ann.style === "banner");
-    box.classList.toggle("modal-mode", ann.style === "modal");
-    box.classList.toggle("fullscreen-mode", ann.style === "fullscreen");
-    if (stage) stage.classList.toggle("has-ann", willShowAnnouncement(ann));
-
-    // 填日曆格（僅一次結構）
+  function ensureCalGrid() {
     const grid = document.querySelector(".home-cal-grid");
     if (grid && !grid.dataset.ready) {
       for (let d = 1; d <= 31; d++) {
@@ -385,15 +404,100 @@
       }
       grid.dataset.ready = "1";
     }
+  }
 
-    if (!willShowAnnouncement(ann)) {
-      const empty = document.createElement("div");
-      empty.className = "phone-empty";
-      empty.textContent = "不顯示公告";
-      box.appendChild(empty);
-      return;
+  function openExternal(url) {
+    if (!url) return;
+    try {
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (_) { /* ignore */ }
+  }
+
+  function resolvePreviewPhase(cfg) {
+    const showUpd = willShowUpdate(cfg.update);
+    const showAnn = willShowAnnouncement(cfg.announcement);
+    if (previewPhase === "auto") {
+      if (showUpd) return "update";
+      if (showAnn) return "announcement";
+      return "done";
+    }
+    if (previewPhase === "update" && !showUpd) {
+      return showAnn ? "announcement" : "done";
+    }
+    if (previewPhase === "announcement" && !showAnn) {
+      return "done";
+    }
+    return previewPhase;
+  }
+
+  function setPreviewHint(phase, cfg) {
+    const hint = $("previewStepHint");
+    if (!hint) return;
+    const showUpd = willShowUpdate(cfg.update);
+    const showAnn = willShowAnnouncement(cfg.announcement);
+    if (phase === "update") {
+      hint.textContent = "步驟 1／2：版本更新（點按鈕可開連結／略過後看公告）";
+    } else if (phase === "announcement") {
+      hint.textContent = showUpd
+        ? "步驟 2／2：公告（點 CTA 可開啟連結）"
+        : "目前：公告（點 CTA 可開啟連結）";
+    } else if (!showUpd && !showAnn) {
+      hint.textContent = "目前不會顯示更新或公告（可調高 targetVersion 或啟用公告）";
+    } else {
+      hint.textContent = "流程結束 · 按「重播流程」再看一次";
+    }
+  }
+
+  function buildUpdateCard(upd) {
+    const mode = (upd.mode || "soft").toLowerCase();
+    const card = document.createElement("div");
+    card.className = "upd-card" + (mode === "force" ? " force" : "");
+
+    const tag = document.createElement("div");
+    tag.className = "upd-tag";
+    tag.textContent = mode === "force" ? "強制更新 · force" : "版本提醒 · soft";
+    card.appendChild(tag);
+
+    const h = document.createElement("h3");
+    h.textContent = upd.title || "有新版本可用";
+    card.appendChild(h);
+
+    const p = document.createElement("p");
+    p.textContent = upd.message || "建議更新以獲得最新功能與修正。";
+    card.appendChild(p);
+
+    const row = document.createElement("div");
+    row.className = "cta-row";
+
+    const go = document.createElement("button");
+    go.type = "button";
+    go.className = "cta primary";
+    go.textContent = "前往更新";
+    go.addEventListener("click", () => {
+      const url = (upd.storeURL || "").trim() || CFG.defaultAppStoreURL;
+      openExternal(url);
+      previewPhase = willShowAnnouncement(readForm().announcement) ? "announcement" : "done";
+      updatePreview();
+    });
+    row.appendChild(go);
+
+    if (mode !== "force") {
+      const later = document.createElement("button");
+      later.type = "button";
+      later.className = "cta ghost";
+      later.textContent = "稍後";
+      later.addEventListener("click", () => {
+        previewPhase = willShowAnnouncement(readForm().announcement) ? "announcement" : "done";
+        updatePreview();
+      });
+      row.appendChild(later);
     }
 
+    card.appendChild(row);
+    return card;
+  }
+
+  function buildAnnouncementCard(ann) {
     const style = ann.style || "fullscreen";
     const card = document.createElement("div");
     card.className = "ann-card " + style;
@@ -423,21 +527,78 @@
     const row = document.createElement("div");
     row.className = "cta-row";
     if (ann.ctaLabel) {
-      const cta = document.createElement("div");
+      const cta = document.createElement("button");
+      cta.type = "button";
       cta.className = "cta primary";
       cta.style.background = accentBorder(ann.accent);
       cta.textContent = ann.ctaLabel;
+      cta.addEventListener("click", () => {
+        openExternal((ann.ctaURL || "").trim());
+      });
       row.appendChild(cta);
     }
     if (ann.dismissible) {
-      const close = document.createElement("div");
+      const close = document.createElement("button");
+      close.type = "button";
       close.className = "cta ghost";
       close.textContent = ann.ctaLabel ? "關閉" : "知道了";
+      close.addEventListener("click", () => {
+        previewPhase = "done";
+        updatePreview();
+      });
       row.appendChild(close);
     }
     if (row.childNodes.length) card.appendChild(row);
+    return card;
+  }
 
-    box.appendChild(card);
+  function updatePreview() {
+    const cfg = readForm();
+    const box = $("annPreview");
+    const stage = box.closest(".home-stage");
+    ensureCalGrid();
+
+    const phase = resolvePreviewPhase(cfg);
+    previewPhase = phase;
+    setPreviewHint(phase, cfg);
+
+    box.innerHTML = "";
+    box.classList.remove("banner-mode", "modal-mode", "fullscreen-mode");
+
+    const showUpd = willShowUpdate(cfg.update);
+    const showAnn = willShowAnnouncement(cfg.announcement);
+
+    if (phase === "update" && showUpd) {
+      if (stage) stage.classList.add("has-ann");
+      box.classList.add("modal-mode");
+      box.appendChild(buildUpdateCard(cfg.update));
+      return;
+    }
+
+    if (phase === "announcement" && showAnn) {
+      if (stage) stage.classList.add("has-ann");
+      const style = cfg.announcement.style || "fullscreen";
+      box.classList.toggle("banner-mode", style === "banner");
+      box.classList.toggle("modal-mode", style === "modal");
+      box.classList.toggle("fullscreen-mode", style === "fullscreen");
+      box.appendChild(buildAnnouncementCard(cfg.announcement));
+      return;
+    }
+
+    if (stage) stage.classList.toggle("has-ann", false);
+    const empty = document.createElement("div");
+    empty.className = "phone-empty";
+    if (!showUpd && !showAnn) {
+      empty.textContent = "不顯示更新／公告";
+    } else {
+      empty.textContent = "流程已結束（重播可再看）";
+    }
+    box.appendChild(empty);
+  }
+
+  function resetPreviewFlow() {
+    previewPhase = "auto";
+    updatePreview();
   }
 
   async function fetchConfig() {
@@ -559,6 +720,7 @@
       }
       status.textContent = "已發布。GitHub Pages 可能需數分鐘才生效。";
       status.className = "status ok";
+      persistPatToSession();
     } catch (e) {
       status.textContent = "發布錯誤：" + e.message;
       status.className = "status err";
@@ -594,15 +756,25 @@
   $("publishBtn").addEventListener("click", publish);
   $("fillStoreBtn").addEventListener("click", fillDefaultStoreURL);
   $("patToggle").addEventListener("click", togglePatVisibility);
+  $("pat").addEventListener("change", persistPatToSession);
+  $("pat").addEventListener("blur", persistPatToSession);
+  $("previewResetBtn").addEventListener("click", resetPreviewFlow);
   $("updTarget").addEventListener("input", updateVersionHints);
   $("updTarget").addEventListener("change", updateVersionHints);
 
   [
     "annEnabled", "annDismissible", "annId", "annStyle", "annAccent",
-    "annTitle", "annBody", "annCtaLabel", "annCtaURL"
+    "annTitle", "annBody", "annCtaLabel", "annCtaURL",
+    "updMode", "updTarget", "updStore", "updTitle", "updMessage"
   ].forEach((id) => {
-    $(id).addEventListener("input", updatePreview);
-    $(id).addEventListener("change", updatePreview);
+    $(id).addEventListener("input", () => {
+      previewPhase = "auto";
+      updatePreview();
+    });
+    $(id).addEventListener("change", () => {
+      previewPhase = "auto";
+      updatePreview();
+    });
   });
 
   const dtInputIds = [
@@ -614,6 +786,7 @@
     el.addEventListener("input", () => {
       el.value = el.value.replace(/\D/g, "");
       syncAllDatetimes();
+      previewPhase = "auto";
       updatePreview();
     });
     el.addEventListener("blur", () => {
