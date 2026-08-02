@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>股帳曆｜公告推播站</title>
-  <link rel="stylesheet" href="./styles.css?v=20260802d" />
-  <script src="./config.js?v=20260802d"></script>
+  <link rel="stylesheet" href="./styles.css?v=20260802e" />
+  <script src="./config.js?v=20260802e"></script>
 </head>
 <body>
   <div class="shell">
@@ -79,8 +79,23 @@
                 <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
               </div>
               <div class="row">
-                <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填" /></div>
-                <div class="field"><label>CTA 連結</label><input id="annCtaURL" placeholder="https://…" /></div>
+                <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填，如：前往查看" /></div>
+                <div class="field">
+                  <label>CTA 連結</label>
+                  <select id="annCtaPreset">
+                    <option value="">自訂／外部網址（下方填）</option>
+                    <option value="stockcalendar://close">關閉公告</option>
+                    <option value="stockcalendar://calendar">日曆</option>
+                    <option value="stockcalendar://analytics">資產分析</option>
+                    <option value="stockcalendar://accounts">資金帳戶</option>
+                    <option value="stockcalendar://holdings">持股列表</option>
+                    <option value="stockcalendar://battlefield">加權戰線</option>
+                    <option value="stockcalendar://settings">設定</option>
+                    <option value="stockcalendar://aichat">AI 對話</option>
+                  </select>
+                  <input id="annCtaURL" placeholder="stockcalendar://… 或 https://…" style="margin-top:8px;" />
+                  <span class="hint" style="margin:4px 0 0;">App 內頁面會關閉公告並導向該功能；亦可填 App Store／網頁連結。</span>
+                </div>
               </div>
 
               <div class="datetime-pair">
@@ -266,6 +281,6 @@
     </div>
   </div>
 
-  <script src="./app.js?v=20260802d"></script>
+  <script src="./app.js?v=20260802e"></script>
 </body>
 </html>

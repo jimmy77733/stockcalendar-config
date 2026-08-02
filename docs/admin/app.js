@@ -342,6 +342,7 @@
     $("annBody").value = ann.body || "";
     $("annCtaLabel").value = ann.ctaLabel || "";
     $("annCtaURL").value = ann.ctaURL || "";
+    syncCtaPresetFromURL();
     fillDatetimeFromISO("starts", ann.startsAt || "");
     fillDatetimeFromISO("ends", ann.endsAt || "");
     $("updMode").value = upd.mode || "off";
@@ -358,6 +359,44 @@
   function fillDefaultStoreURL() {
     $("updStore").value = "";
     $("updStore").value = CFG.defaultAppStoreURL || "https://apps.apple.com/app/id6790064657";
+  }
+
+  function syncCtaPresetFromURL() {
+    const preset = $("annCtaPreset");
+    if (!preset) return;
+    const url = ($("annCtaURL").value || "").trim();
+    const match = [...preset.options].some((o) => o.value && o.value === url);
+    preset.value = match ? url : "";
+  }
+
+  function applyCtaPreset() {
+    const preset = $("annCtaPreset");
+    if (!preset) return;
+    const v = preset.value;
+    if (!v) return;
+    $("annCtaURL").value = v;
+    if (!$("annCtaLabel").value.trim()) {
+      const text = preset.selectedOptions[0]?.textContent || "";
+      if (text && text !== "自訂／外部網址（下方填）") {
+        $("annCtaLabel").value = text === "關閉公告" ? "關閉" : ("前往" + text);
+      }
+    }
+    previewPhase = "auto";
+    updatePreview();
+  }
+
+  function describeInternalLink(url) {
+    const map = {
+      "stockcalendar://close": "關閉公告",
+      "stockcalendar://calendar": "日曆",
+      "stockcalendar://analytics": "資產分析",
+      "stockcalendar://accounts": "資金帳戶",
+      "stockcalendar://holdings": "持股列表",
+      "stockcalendar://battlefield": "加權戰線",
+      "stockcalendar://settings": "設定",
+      "stockcalendar://aichat": "AI 對話"
+    };
+    return map[(url || "").trim()] || null;
   }
 
   function togglePasswordVisibility(inputId, btnId) {
@@ -540,6 +579,20 @@
       cta.className = "cta primary";
       cta.textContent = ann.ctaLabel;
       cta.addEventListener("click", () => {
+        const dest = describeInternalLink(ann.ctaURL);
+        if (dest) {
+          if (dest === "關閉公告") {
+            previewPhase = "done";
+            updatePreview();
+          } else {
+            window.alert("App 內導向：" + dest + "\n（實際裝置會關閉公告並打開該頁）");
+            if (ann.dismissible) {
+              previewPhase = "done";
+              updatePreview();
+            }
+          }
+          return;
+        }
         openExternal((ann.ctaURL || "").trim());
       });
       row.appendChild(cta);
@@ -782,6 +835,8 @@
   $("pat").addEventListener("change", persistPatToSession);
   $("pat").addEventListener("blur", persistPatToSession);
   $("previewResetBtn").addEventListener("click", resetPreviewFlow);
+  $("annCtaPreset").addEventListener("change", applyCtaPreset);
+  $("annCtaURL").addEventListener("input", syncCtaPresetFromURL);
   $("updTarget").addEventListener("input", updateVersionHints);
   $("updTarget").addEventListener("change", updateVersionHints);
 
