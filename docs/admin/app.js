@@ -394,10 +394,6 @@
     return compareVersion(current, target) < 0;
   }
 
-  function accentBorder() {
-    return "#8B6914";
-  }
-
   function ensureCalGrid() {
     const grid = document.querySelector(".home-cal-grid");
     if (grid && !grid.dataset.ready) {
