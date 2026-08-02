@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-02T16:00:00+08:00",
+  "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
+  "update": {
+    "mode": "off",
+    "targetVersion": "1.4",
+    "storeURL": "",
+    "title": "有新版本可用",
+    "message": "建議更新以獲得最新功能與修正。"
+  },
+  "announcement": {
+    "enabled": false,
+    "id": "",
+    "style": "fullscreen",
+    "title": "",
+    "body": "",
+    "accent": "brand",
+    "ctaLabel": null,
+    "ctaURL": null,
+    "dismissible": true,
+    "startsAt": null,
+    "endsAt": null
+  }
+}
