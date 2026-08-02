@@ -6,6 +6,36 @@
 
   /** 預覽流程：update → announcement → done */
   let previewPhase = "auto";
+  /** 公告翻頁索引（對 includedActive 佇列） */
+  let previewAnnIndex = 0;
+
+  /** @type {Array<DraftAnn>} */
+  let drafts = [];
+  let selectedIndex = 0;
+  let suppressEditorSync = false;
+
+  /** @type {{ version: number, updatedAt: string, entries: Array }} */
+  let archive = { version: 1, updatedAt: new Date().toISOString(), entries: [] };
+  let librarySelectedId = "";
+  let librarySelectedSnap = null;
+
+  /**
+   * @typedef {object} DraftAnn
+   * @property {boolean} include
+   * @property {boolean} idLocked
+   * @property {boolean} enabled
+   * @property {string} id
+   * @property {string} style
+   * @property {string} title
+   * @property {string} body
+   * @property {string} accent
+   * @property {string|null} ctaLabel
+   * @property {string|null} ctaURL
+   * @property {boolean} dismissible
+   * @property {string|null} startsAt
+   * @property {string|null} endsAt
+   * @property {string} frequency
+   */
 
   const EYE_OPEN = '<svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 5c-5 0-9.27 3.11-11 7 1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>';
   const EYE_OFF = '<svg class="eye-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 6.5c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-3.89-6-7-11-7-1.4 0-2.74.25-3.98.7l2.16 2.16c.57-.23 1.18-.36 1.83-.36zM3.27 2.5 2 3.77l2.1 2.1C2.61 7.16 1.28 8.88.42 11c1.73 3.89 6 7 11 7 1.55 0 3.03-.3 4.38-.84l2.42 2.42L19.5 18.3 3.27 2.5zM12 16.5c-2.76 0-5-2.24-5-5 0-.77.18-1.5.49-2.14l1.57 1.57c-.03.18-.06.37-.06.57a3 3 0 0 0 3 3c.2 0 .39-.03.57-.06l1.57 1.57c-.64.31-1.37.49-2.14.49zm2.97-5.33a2.97 2.97 0 0 0-2.64-2.64l2.64 2.64z"/></svg>';
@@ -28,17 +58,6 @@
     if (saved === "light" || saved === "dark") setTheme(saved);
   }
 
-  function initAccordions() {
-    document.querySelectorAll("[data-accordion]").forEach((section) => {
-      const head = section.querySelector(".accordion-head");
-      if (!head) return;
-      head.addEventListener("click", () => {
-        const open = section.classList.toggle("open");
-        head.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-    });
-  }
-
   function unlockUI() {
     $("gate").classList.add("hidden");
     $("app").classList.remove("hidden");
@@ -50,7 +69,6 @@
     $("gate").classList.remove("hidden");
     $("app").classList.add("hidden");
     sessionStorage.removeItem(SESSION_KEY);
-    // PAT 留在 Session，下次進站門後自動還原
     $("pat").value = "";
   }
 
@@ -69,6 +87,74 @@
     const t = (s || "").trim();
     return t ? t : null;
   }
+
+  function defaultDraft(partial = {}) {
+    const day = new Date().toISOString().slice(0, 10);
+    return {
+      include: true,
+      idLocked: false,
+      enabled: true,
+      id: "ann-" + day + "-" + Math.random().toString(36).slice(2, 6),
+      style: "modal",
+      title: "",
+      body: "",
+      accent: "brand",
+      ctaLabel: null,
+      ctaURL: null,
+      dismissible: true,
+      startsAt: null,
+      endsAt: null,
+      frequency: "once",
+      ...partial
+    };
+  }
+
+  function normalizeAnn(raw) {
+    const a = raw || {};
+    return defaultDraft({
+      include: true,
+      idLocked: false,
+      enabled: !!a.enabled,
+      id: a.id || "",
+      style: a.style || "fullscreen",
+      title: a.title || "",
+      body: a.body || "",
+      accent: a.accent || "brand",
+      ctaLabel: a.ctaLabel ?? null,
+      ctaURL: a.ctaURL ?? null,
+      dismissible: a.dismissible !== false,
+      startsAt: a.startsAt ?? null,
+      endsAt: a.endsAt ?? null,
+      frequency: (a.frequency === "daily" ? "daily" : "once")
+    });
+  }
+
+  function announcementsFromConfig(cfg) {
+    if (Array.isArray(cfg.announcements) && cfg.announcements.length) {
+      return cfg.announcements.map(normalizeAnn);
+    }
+    if (cfg.announcement) return [normalizeAnn(cfg.announcement)];
+    return [];
+  }
+
+  function draftToPayload(d) {
+    return {
+      enabled: !!d.enabled,
+      id: (d.id || "").trim(),
+      style: d.style || "modal",
+      title: (d.title || "").trim(),
+      body: (d.body || "").trim(),
+      accent: d.accent || "brand",
+      ctaLabel: emptyToNull(d.ctaLabel),
+      ctaURL: emptyToNull(d.ctaURL),
+      dismissible: !!d.dismissible,
+      startsAt: d.startsAt || null,
+      endsAt: d.endsAt || null,
+      frequency: d.dismissible === false ? "once" : (d.frequency === "daily" ? "daily" : "once")
+    };
+  }
+
+  // —— Datetime helpers（綁定目前選中草稿）——
 
   const DT_FIELDS = {
     starts: { y: "startsY", m: "startsM", d: "startsD", h: "startsH", min: "startsMin", hidden: "annStarts", iso: "startsISO", err: "startsErr" },
@@ -107,7 +193,6 @@
     });
   }
 
-  /** 回傳 { ok, empty, iso, error, invalidFields } */
   function assembleDatetime(key) {
     const parts = readDtParts(key);
     const values = [parts.y, parts.m, parts.d, parts.h, parts.min];
@@ -158,7 +243,6 @@
     }
 
     const iso = `${y}-${pad2(m)}-${pad2(d)}T${pad2(h)}:${pad2(min)}:00+08:00`;
-    // 再驗證可被 Date 解析
     const parsed = Date.parse(iso);
     if (Number.isNaN(parsed)) {
       return { ok: false, empty: false, iso: null, error: "無法組成有效時間", invalidFields: ["y", "m", "d", "h", "min"] };
@@ -208,10 +292,10 @@
     const f = DT_FIELDS[key];
     [f.y, f.m, f.d, f.h, f.min].forEach((id) => { $(id).value = ""; });
     syncDatetimeUI(key);
-    updatePreview();
+    pullEditorIntoDraft();
+    bumpPreview();
   }
 
-  /** 解析 ISO 字串填回分割欄位（支援 +08:00 / Z） */
   function fillDatetimeFromISO(key, iso) {
     const f = DT_FIELDS[key];
     [f.y, f.m, f.d, f.h, f.min].forEach((id) => { $(id).value = ""; });
@@ -223,7 +307,6 @@
       /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/
     );
     if (!m) {
-      // 無法分割時仍寫入 hidden，並提示
       $(f.hidden).value = iso;
       $(f.iso).textContent = iso;
       $(f.iso).classList.remove("ok");
@@ -239,12 +322,34 @@
     syncDatetimeUI(key);
   }
 
+  function validateDraftDatetimes(d) {
+    const check = (iso, label) => {
+      if (!iso) return null;
+      if (Number.isNaN(Date.parse(iso))) return label + "無效";
+      return null;
+    };
+    const a = check(d.startsAt, "開始時間");
+    if (a) return a;
+    const b = check(d.endsAt, "結束時間");
+    if (b) return b;
+    if (d.startsAt && d.endsAt && Date.parse(d.startsAt) >= Date.parse(d.endsAt)) {
+      return "結束時間必須晚於開始時間（ID：" + (d.id || "未命名") + "）";
+    }
+    return null;
+  }
+
   function validateDatetimesForPublish() {
-    const { starts, ends } = syncAllDatetimes();
-    if (!starts.ok) return "開始時間格式有誤：" + starts.error;
-    if (!ends.ok) return "結束時間格式有誤：" + ends.error;
-    if (starts.iso && ends.iso && Date.parse(starts.iso) >= Date.parse(ends.iso)) {
-      return "結束時間必須晚於開始時間";
+    pullEditorIntoDraft();
+    for (const d of drafts) {
+      if (!d.include) continue;
+      const err = validateDraftDatetimes(d);
+      if (err) return err;
+    }
+    // 也驗證目前編輯器欄位（若有選中）
+    if (drafts[selectedIndex]) {
+      const { starts, ends } = syncAllDatetimes();
+      if (!starts.ok) return "開始時間格式有誤：" + starts.error;
+      if (!ends.ok) return "結束時間格式有誤：" + ends.error;
     }
     return null;
   }
@@ -300,8 +405,197 @@
     }
   }
 
-  function readForm() {
+  // —— List / editor ——
+
+  function selectedDraft() {
+    return drafts[selectedIndex] || null;
+  }
+
+  function renderAnnList() {
+    const box = $("annList");
+    box.innerHTML = "";
+    drafts.forEach((d, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ann-list-item" + (i === selectedIndex ? " active" : "");
+      const include = document.createElement("input");
+      include.type = "checkbox";
+      include.checked = !!d.include;
+      include.title = "納入本次";
+      include.addEventListener("click", (e) => e.stopPropagation());
+      include.addEventListener("change", () => {
+        d.include = include.checked;
+        bumpPreview();
+      });
+
+      const meta = document.createElement("div");
+      meta.className = "ann-meta";
+      const title = document.createElement("strong");
+      title.textContent = (d.title || "").trim() || (d.id || "（無 ID）");
+      const sub = document.createElement("small");
+      sub.textContent = (d.id || "無 ID") + (d.enabled ? "" : " · 未啟用");
+      meta.appendChild(title);
+      meta.appendChild(sub);
+
+      const badges = document.createElement("div");
+      badges.style.display = "flex";
+      badges.style.flexDirection = "column";
+      badges.style.gap = "4px";
+      badges.style.alignItems = "flex-end";
+      if (!d.dismissible) {
+        const b = document.createElement("span");
+        b.className = "ann-badge maint";
+        b.textContent = "維護";
+        badges.appendChild(b);
+      }
+      const freq = document.createElement("span");
+      freq.className = "ann-badge" + (d.frequency === "daily" && d.dismissible ? " daily" : "");
+      freq.textContent = (!d.dismissible || d.frequency !== "daily") ? "單次" : "循環";
+      badges.appendChild(freq);
+      if (!d.enabled) {
+        const off = document.createElement("span");
+        off.className = "ann-badge off";
+        off.textContent = "關";
+        badges.appendChild(off);
+      }
+
+      btn.appendChild(include);
+      btn.appendChild(meta);
+      btn.appendChild(badges);
+      btn.addEventListener("click", () => {
+        pullEditorIntoDraft();
+        selectedIndex = i;
+        pushDraftToEditor();
+        renderAnnList();
+        bumpPreview();
+      });
+      box.appendChild(btn);
+    });
+  }
+
+  function updateFrequencyUI() {
+    const d = selectedDraft();
+    const sel = $("annFrequency");
+    const hint = $("annFrequencyHint");
+    const maint = $("annMaintenance").checked;
+    if (!d) return;
+    if (maint) {
+      sel.value = "once";
+      sel.disabled = true;
+      hint.textContent = "維護中固定為單次（不可關閉，不套用循環）。";
+    } else {
+      sel.disabled = false;
+      hint.textContent = sel.value === "daily"
+        ? "循環：每日台北日最多一次；關閉記今日；勾「不再顯示」才永久關閉。"
+        : "單次：關閉後同 ID 永久不再顯示；要再觸達請換新 ID。";
+    }
+  }
+
+  function pushDraftToEditor() {
+    const d = selectedDraft();
+    const editor = $("annEditor");
+    const empty = $("annEditorEmpty");
+    if (!d) {
+      editor.classList.add("hidden");
+      empty.classList.remove("hidden");
+      return;
+    }
+    editor.classList.remove("hidden");
+    empty.classList.add("hidden");
+    suppressEditorSync = true;
+    $("annEnabled").checked = !!d.enabled;
+    $("annMaintenance").checked = d.dismissible === false;
+    $("annId").value = d.id || "";
+    $("annId").readOnly = !!d.idLocked;
+    $("annIdLockHint").textContent = d.idLocked ? "（自 ID 庫載入，唯讀）" : "";
+    $("annFrequency").value = d.frequency === "daily" ? "daily" : "once";
+    $("annStyle").value = d.style || "fullscreen";
+    $("annTitle").value = d.title || "";
+    $("annBody").value = d.body || "";
+    $("annCtaLabel").value = d.ctaLabel || "";
+    $("annCtaURL").value = d.ctaURL || "";
+    syncCtaPresetFromURL();
+    fillDatetimeFromISO("starts", d.startsAt || "");
+    fillDatetimeFromISO("ends", d.endsAt || "");
+    updateFrequencyUI();
+    suppressEditorSync = false;
+  }
+
+  function pullEditorIntoDraft() {
+    if (suppressEditorSync) return;
+    const d = selectedDraft();
+    if (!d) return;
     syncAllDatetimes();
+    d.enabled = $("annEnabled").checked;
+    d.dismissible = !$("annMaintenance").checked;
+    if (!d.idLocked) d.id = ($("annId").value || "").trim();
+    d.frequency = d.dismissible === false ? "once" : ($("annFrequency").value === "daily" ? "daily" : "once");
+    d.style = $("annStyle").value;
+    d.title = ($("annTitle").value || "").trim();
+    d.body = ($("annBody").value || "").trim();
+    d.ctaLabel = emptyToNull($("annCtaLabel").value);
+    d.ctaURL = emptyToNull($("annCtaURL").value);
+    d.startsAt = emptyToNull($("annStarts").value);
+    d.endsAt = emptyToNull($("annEnds").value);
+  }
+
+  function bumpPreview() {
+    previewPhase = "auto";
+    previewAnnIndex = 0;
+    updatePreview();
+  }
+
+  function addDraft(partial) {
+    pullEditorIntoDraft();
+    drafts.push(defaultDraft(partial));
+    selectedIndex = drafts.length - 1;
+    renderAnnList();
+    pushDraftToEditor();
+    bumpPreview();
+  }
+
+  function deleteSelected() {
+    if (!drafts.length) return;
+    pullEditorIntoDraft();
+    drafts.splice(selectedIndex, 1);
+    selectedIndex = Math.max(0, Math.min(selectedIndex, drafts.length - 1));
+    renderAnnList();
+    pushDraftToEditor();
+    bumpPreview();
+  }
+
+  function duplicateSelected() {
+    const d = selectedDraft();
+    if (!d) return;
+    pullEditorIntoDraft();
+    const copy = defaultDraft({
+      ...draftToPayload(d),
+      include: true,
+      idLocked: false,
+      id: (d.id || "ann") + "-copy"
+    });
+    drafts.splice(selectedIndex + 1, 0, copy);
+    selectedIndex += 1;
+    renderAnnList();
+    pushDraftToEditor();
+    bumpPreview();
+  }
+
+  function moveSelected(delta) {
+    const i = selectedIndex;
+    const j = i + delta;
+    if (j < 0 || j >= drafts.length) return;
+    pullEditorIntoDraft();
+    const [item] = drafts.splice(i, 1);
+    drafts.splice(j, 0, item);
+    selectedIndex = j;
+    renderAnnList();
+    bumpPreview();
+  }
+
+  function readForm() {
+    pullEditorIntoDraft();
+    const included = drafts.filter((d) => d.include).map(draftToPayload);
     return {
       version: 1,
       updatedAt: new Date().toISOString(),
@@ -313,51 +607,30 @@
         title: ($("updTitle").value || "").trim(),
         message: ($("updMessage").value || "").trim()
       },
-      announcement: {
-        enabled: $("annEnabled").checked,
-        id: ($("annId").value || "").trim(),
-        style: $("annStyle").value,
-        title: ($("annTitle").value || "").trim(),
-        body: ($("annBody").value || "").trim(),
-        accent: "brand",
-        ctaLabel: emptyToNull($("annCtaLabel").value),
-        ctaURL: emptyToNull($("annCtaURL").value),
-        dismissible: !$("annMaintenance").checked,
-        startsAt: emptyToNull($("annStarts").value),
-        endsAt: emptyToNull($("annEnds").value)
-      }
+      announcements: included
     };
   }
 
   function fillForm(cfg) {
-    const ann = cfg.announcement || {};
+    drafts = announcementsFromConfig(cfg);
+    if (!drafts.length) drafts = [];
+    selectedIndex = 0;
     const upd = cfg.update || {};
-    $("annEnabled").checked = !!ann.enabled;
-    $("annMaintenance").checked = ann.dismissible === false;
-    $("annId").value = ann.id || "";
-    $("annStyle").value = ann.style || "fullscreen";
-    // accent 欄位保留相容，後台已移除強調色設定
-    void (ann.accent);
-    $("annTitle").value = ann.title || "";
-    $("annBody").value = ann.body || "";
-    $("annCtaLabel").value = ann.ctaLabel || "";
-    $("annCtaURL").value = ann.ctaURL || "";
-    syncCtaPresetFromURL();
-    fillDatetimeFromISO("starts", ann.startsAt || "");
-    fillDatetimeFromISO("ends", ann.endsAt || "");
     $("updMode").value = upd.mode || "off";
     $("updTarget").value = upd.targetVersion || "";
     $("updStore").value = upd.storeURL || CFG.defaultAppStoreURL || "";
     $("updTitle").value = upd.title || "";
     $("updMessage").value = upd.message || "";
     $("feedbackURL").value = cfg.feedbackFormURL || "https://forms.gle/tGECU4KmFZqs8DRD8";
+    renderAnnList();
+    pushDraftToEditor();
     previewPhase = "auto";
+    previewAnnIndex = 0;
     updatePreview();
     updateVersionHints();
   }
 
   function fillDefaultStoreURL() {
-    $("updStore").value = "";
     $("updStore").value = CFG.defaultAppStoreURL || "https://apps.apple.com/app/id6790064657";
   }
 
@@ -381,8 +654,8 @@
         $("annCtaLabel").value = text === "關閉公告" ? "關閉" : ("前往" + text);
       }
     }
-    previewPhase = "auto";
-    updatePreview();
+    pullEditorIntoDraft();
+    bumpPreview();
   }
 
   function describeInternalLink(url) {
@@ -409,19 +682,18 @@
     btn.setAttribute("aria-label", show ? "隱藏密碼" : "顯示密碼");
   }
 
-  function togglePatVisibility() {
-    togglePasswordVisibility("pat", "patToggle");
-  }
-
-  function toggleGatePassVisibility() {
-    togglePasswordVisibility("gatePassword", "gatePassToggle");
-  }
-
   function willShowAnnouncement(ann) {
-    if (!ann.enabled) return false;
+    if (!ann || !ann.enabled) return false;
     const t = (ann.title || "").trim();
     const b = (ann.body || "").trim();
     return !!(t || b);
+  }
+
+  function previewQueue(cfg) {
+    const list = (cfg.announcements || []).filter(willShowAnnouncement);
+    const maint = list.find((a) => a.dismissible === false);
+    if (maint) return [maint];
+    return list;
   }
 
   function willShowUpdate(upd) {
@@ -455,9 +727,9 @@
 
   function resolvePreviewPhase(cfg) {
     const showUpd = willShowUpdate(cfg.update);
-    const showAnn = willShowAnnouncement(cfg.announcement);
-    const maintenance = showAnn && cfg.announcement.dismissible === false;
-    // 維護中：直接擋在公告，略過更新預覽步驟
+    const queue = previewQueue(cfg);
+    const showAnn = queue.length > 0;
+    const maintenance = showAnn && queue[0].dismissible === false;
     if (maintenance) {
       if (previewPhase === "done") return "done";
       return "announcement";
@@ -480,16 +752,19 @@
     const hint = $("previewStepHint");
     if (!hint) return;
     const showUpd = willShowUpdate(cfg.update);
-    const showAnn = willShowAnnouncement(cfg.announcement);
+    const queue = previewQueue(cfg);
+    const showAnn = queue.length > 0;
     if (phase === "update") {
-      hint.textContent = "步驟 1／2：版本更新（點按鈕可開連結／略過後看公告）";
+      hint.textContent = "步驟：版本更新（略過後看公告佇列）";
     } else if (phase === "announcement") {
-      const maint = cfg.announcement && cfg.announcement.dismissible === false;
+      const ann = queue[Math.min(previewAnnIndex, queue.length - 1)];
+      const maint = ann && ann.dismissible === false;
+      const page = queue.length > 1 ? `（第 ${previewAnnIndex + 1}／${queue.length} 則）` : "";
       hint.textContent = maint
-        ? "維護中：無法關閉，使用者被擋在公告外（僅 CTA 可點）"
-        : (showUpd ? "步驟 2／2：公告（點 CTA 可開啟連結）" : "目前：公告（點 CTA 可開啟連結）");
+        ? "維護中：無法關閉，使用者被擋在公告外"
+        : ("公告翻頁" + page + (ann && ann.frequency === "daily" ? " · 循環示意左下「不再顯示」" : ""));
     } else if (!showUpd && !showAnn) {
-      hint.textContent = "目前不會顯示更新或公告（可調高 targetVersion 或啟用公告）";
+      hint.textContent = "目前不會顯示更新或公告";
     } else {
       hint.textContent = "流程結束 · 按「重播流程」再看一次";
     }
@@ -523,7 +798,9 @@
     go.addEventListener("click", () => {
       const url = (upd.storeURL || "").trim() || CFG.defaultAppStoreURL;
       openExternal(url);
-      previewPhase = willShowAnnouncement(readForm().announcement) ? "announcement" : "done";
+      const q = previewQueue(readForm());
+      previewAnnIndex = 0;
+      previewPhase = q.length ? "announcement" : "done";
       updatePreview();
     });
     row.appendChild(go);
@@ -534,7 +811,9 @@
       later.className = "cta ghost";
       later.textContent = "稍後";
       later.addEventListener("click", () => {
-        previewPhase = willShowAnnouncement(readForm().announcement) ? "announcement" : "done";
+        const q = previewQueue(readForm());
+        previewAnnIndex = 0;
+        previewPhase = q.length ? "announcement" : "done";
         updatePreview();
       });
       row.appendChild(later);
@@ -544,9 +823,25 @@
     return card;
   }
 
-  function buildAnnouncementCard(ann) {
+  function advancePreviewAnn(queue) {
+    if (previewAnnIndex + 1 < queue.length) {
+      previewAnnIndex += 1;
+      previewPhase = "announcement";
+    } else {
+      previewPhase = "done";
+    }
+    updatePreview();
+  }
+
+  function buildAnnouncementCard(ann, pageIndex, pageCount) {
     const maintenance = ann.dismissible === false;
     const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
+    const wrap = document.createElement("div");
+    wrap.style.width = "100%";
+    wrap.style.display = "flex";
+    wrap.style.flexDirection = "column";
+    wrap.style.alignItems = style === "banner" ? "stretch" : "center";
+
     const card = document.createElement("div");
     card.className = "ann-card " + style + (maintenance ? " maintenance" : "");
     card.style.border = "none";
@@ -559,10 +854,20 @@
     }
 
     if (!maintenance) {
+      const tagRow = document.createElement("div");
+      tagRow.style.display = "flex";
+      tagRow.style.alignItems = "center";
       const tag = document.createElement("div");
       tag.className = "tag";
       tag.textContent = "公告";
-      card.appendChild(tag);
+      tagRow.appendChild(tag);
+      if (pageCount > 1) {
+        const page = document.createElement("span");
+        page.className = "ann-page-label";
+        page.textContent = `第 ${pageIndex + 1}／${pageCount} 則`;
+        tagRow.appendChild(page);
+      }
+      card.appendChild(tagRow);
     }
 
     const bodyWrap = document.createElement("div");
@@ -595,14 +900,10 @@
         const dest = describeInternalLink(ann.ctaURL);
         if (dest) {
           if (dest === "關閉公告") {
-            previewPhase = "done";
-            updatePreview();
+            if (ann.dismissible) advancePreviewAnn(previewQueue(readForm()));
           } else {
             window.alert("App 內導向：" + dest + "\n（實際裝置會關閉公告並打開該頁）");
-            if (ann.dismissible) {
-              previewPhase = "done";
-              updatePreview();
-            }
+            if (ann.dismissible) advancePreviewAnn(previewQueue(readForm()));
           }
           return;
         }
@@ -616,8 +917,7 @@
       close.className = "cta ghost";
       close.textContent = ann.ctaLabel ? "關閉" : "知道了";
       close.addEventListener("click", () => {
-        previewPhase = "done";
-        updatePreview();
+        advancePreviewAnn(previewQueue(readForm()));
       });
       row.appendChild(close);
     }
@@ -630,7 +930,17 @@
       bottom.innerHTML = '<div class="hazard-track" aria-hidden="true"></div>';
       card.appendChild(bottom);
     }
-    return card;
+
+    wrap.appendChild(card);
+
+    if (!maintenance && ann.dismissible && ann.frequency === "daily") {
+      const never = document.createElement("label");
+      never.className = "ann-never-again";
+      never.innerHTML = '<input type="checkbox" /> 不再顯示';
+      wrap.appendChild(never);
+    }
+
+    return wrap;
   }
 
   function updatePreview() {
@@ -647,7 +957,8 @@
     box.classList.remove("banner-mode", "modal-mode", "fullscreen-mode");
 
     const showUpd = willShowUpdate(cfg.update);
-    const showAnn = willShowAnnouncement(cfg.announcement);
+    const queue = previewQueue(cfg);
+    const showAnn = queue.length > 0;
 
     if (phase === "update" && showUpd) {
       if (stage) stage.classList.add("has-ann");
@@ -658,12 +969,14 @@
 
     if (phase === "announcement" && showAnn) {
       if (stage) stage.classList.add("has-ann");
-      const maintenance = cfg.announcement.dismissible === false;
-      const style = maintenance ? "fullscreen" : (cfg.announcement.style || "fullscreen");
+      if (previewAnnIndex >= queue.length) previewAnnIndex = 0;
+      const ann = queue[previewAnnIndex];
+      const maintenance = ann.dismissible === false;
+      const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
       box.classList.toggle("banner-mode", style === "banner");
       box.classList.toggle("modal-mode", style === "modal");
       box.classList.toggle("fullscreen-mode", style === "fullscreen");
-      box.appendChild(buildAnnouncementCard(cfg.announcement));
+      box.appendChild(buildAnnouncementCard(ann, previewAnnIndex, queue.length));
       return;
     }
 
@@ -680,13 +993,171 @@
 
   function resetPreviewFlow() {
     previewPhase = "auto";
+    previewAnnIndex = 0;
     updatePreview();
+  }
+
+  // —— Archive / ID library ——
+
+  async function fetchArchive() {
+    const urls = [CFG.pagesArchiveURL, CFG.rawArchiveURL].filter(Boolean);
+    for (const url of urls) {
+      try {
+        const res = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) continue;
+        const json = await res.json();
+        archive = {
+          version: json.version || 1,
+          updatedAt: json.updatedAt || new Date().toISOString(),
+          entries: Array.isArray(json.entries) ? json.entries : []
+        };
+        return;
+      } catch (_) { /* next */ }
+    }
+    archive = { version: 1, updatedAt: new Date().toISOString(), entries: [] };
+  }
+
+  function groupArchiveById() {
+    const map = new Map();
+    for (const entry of archive.entries || []) {
+      const snap = entry.announcement || entry.snapshot || entry;
+      const id = (snap.id || entry.id || "").trim();
+      if (!id) continue;
+      if (!map.has(id)) map.set(id, []);
+      map.get(id).push({
+        publishedAt: entry.publishedAt || entry.updatedAt || "",
+        announcement: normalizeAnn(snap)
+      });
+    }
+    for (const [, list] of map) {
+      list.sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+    }
+    return map;
+  }
+
+  function openLibrary() {
+    $("idLibraryModal").classList.remove("hidden");
+    renderLibrary();
+  }
+
+  function closeLibrary() {
+    $("idLibraryModal").classList.add("hidden");
+  }
+
+  function renderLibrary() {
+    const idsBox = $("libraryIdList");
+    const hist = $("libraryHistory");
+    const edit = $("libraryEdit");
+    const empty = $("libraryEmpty");
+    idsBox.innerHTML = "";
+    hist.innerHTML = "";
+    const map = groupArchiveById();
+    const ids = [...map.keys()].sort();
+    if (!ids.length) {
+      edit.classList.add("hidden");
+      empty.classList.remove("hidden");
+      empty.textContent = "尚無歷史。發布公告後會寫入此庫。";
+      return;
+    }
+    empty.classList.add("hidden");
+    if (!librarySelectedId || !map.has(librarySelectedId)) {
+      librarySelectedId = ids[0];
+    }
+    ids.forEach((id) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "library-id-btn" + (id === librarySelectedId ? " active" : "");
+      btn.textContent = id + "（" + map.get(id).length + "）";
+      btn.addEventListener("click", () => {
+        librarySelectedId = id;
+        librarySelectedSnap = map.get(id)[0] || null;
+        renderLibrary();
+      });
+      idsBox.appendChild(btn);
+    });
+
+    const snaps = map.get(librarySelectedId) || [];
+    if (!librarySelectedSnap) librarySelectedSnap = snaps[0] || null;
+    snaps.forEach((s, idx) => {
+      const el = document.createElement("button");
+      el.type = "button";
+      el.className = "library-snap" + (librarySelectedSnap === s ? " active" : "");
+      const strong = document.createElement("strong");
+      strong.textContent = (s.announcement.title || "").trim() || "(無標題)";
+      const small = document.createElement("small");
+      const freq = s.announcement.frequency === "daily" ? "循環" : "單次";
+      small.textContent = (s.publishedAt || "未知時間") + " · " + freq;
+      el.appendChild(strong);
+      el.appendChild(small);
+      el.addEventListener("click", () => {
+        librarySelectedSnap = s;
+        fillLibraryEdit(s.announcement);
+        renderLibrary();
+      });
+      hist.appendChild(el);
+      if (idx === 0 && librarySelectedSnap === s) fillLibraryEdit(s.announcement);
+    });
+    if (librarySelectedSnap) {
+      edit.classList.remove("hidden");
+      fillLibraryEdit(librarySelectedSnap.announcement);
+    } else {
+      edit.classList.add("hidden");
+    }
+  }
+
+  function fillLibraryEdit(ann) {
+    $("libId").value = ann.id || "";
+    $("libFrequency").value = ann.frequency === "daily" ? "daily" : "once";
+    $("libTitle").value = ann.title || "";
+    $("libBody").value = ann.body || "";
+  }
+
+  function applyLibraryToDrafts() {
+    const id = ($("libId").value || "").trim();
+    if (!id || !librarySelectedSnap) return;
+    const base = librarySelectedSnap.announcement;
+    const draft = defaultDraft({
+      ...draftToPayload(base),
+      id,
+      title: ($("libTitle").value || "").trim(),
+      body: ($("libBody").value || "").trim(),
+      frequency: $("libFrequency").value === "daily" ? "daily" : "once",
+      include: true,
+      idLocked: true
+    });
+    pullEditorIntoDraft();
+    drafts.push(draft);
+    selectedIndex = drafts.length - 1;
+    renderAnnList();
+    pushDraftToEditor();
+    closeLibrary();
+    bumpPreview();
+  }
+
+  function mergeArchiveEntries(publishedAnns, publishedAt) {
+    const next = {
+      version: 1,
+      updatedAt: publishedAt,
+      entries: Array.isArray(archive.entries) ? [...archive.entries] : []
+    };
+    for (const ann of publishedAnns) {
+      if (!ann.id) continue;
+      next.entries.unshift({
+        publishedAt,
+        announcement: { ...ann }
+      });
+    }
+    // 保留最近 200 筆
+    if (next.entries.length > 200) next.entries = next.entries.slice(0, 200);
+    archive = next;
+    return next;
   }
 
   async function fetchConfig() {
     const status = $("loadStatus");
     status.textContent = "載入中…";
     status.className = "status";
+    await fetchArchive();
     const urls = [CFG.pagesConfigURL, CFG.rawConfigURL];
     for (const url of urls) {
       try {
@@ -740,6 +1211,34 @@
     throw new Error("讀取遠端檔案失敗：" + metaRes.status);
   }
 
+  async function putFile({ path, contentObj, message, token, branch }) {
+    const { owner, repo } = CFG.github;
+    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+    const content = utf8ToBase64(JSON.stringify(contentObj, null, 2) + "\n");
+
+    async function putOnce(sha) {
+      const body = { message, content, branch };
+      if (sha) body.sha = sha;
+      return fetch(apiBase, {
+        method: "PUT",
+        headers: {
+          Accept: "application/vnd.github+json",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+    }
+
+    let sha = await fetchLatestSha(apiBase, branch, token);
+    let putRes = await putOnce(sha);
+    if (putRes.status === 409) {
+      sha = await fetchLatestSha(apiBase, branch, token);
+      putRes = await putOnce(sha);
+    }
+    return putRes;
+  }
+
   async function publish() {
     const status = $("publishStatus");
     const token = ($("pat").value || "").trim();
@@ -760,61 +1259,85 @@
       status.className = "status err";
       return;
     }
-    if ($("annMaintenance").checked) {
-      if (!cfg.announcement.enabled) {
-        status.textContent = "維護中需勾選「啟用公告」";
-        status.className = "status err";
-        return;
+
+    const maintList = cfg.announcements.filter((a) => a.dismissible === false);
+    if (maintList.length > 1) {
+      status.textContent = "維護中最多只能納入一則";
+      status.className = "status err";
+      return;
+    }
+    for (const ann of cfg.announcements) {
+      if (!ann.dismissible) {
+        if (!ann.enabled) {
+          status.textContent = "維護中需啟用該則公告";
+          status.className = "status err";
+          return;
+        }
+        if (!(ann.title || "").trim() && !(ann.body || "").trim()) {
+          status.textContent = "維護中請填寫標題或內文";
+          status.className = "status err";
+          return;
+        }
       }
-      const t = (cfg.announcement.title || "").trim();
-      const b = (cfg.announcement.body || "").trim();
-      if (!t && !b) {
-        status.textContent = "維護中請填寫公告標題或內文，否則使用者看不到阻擋畫面";
+      if (ann.enabled && !(ann.id || "").trim()) {
+        status.textContent = "已啟用的公告需要 ID";
         status.className = "status err";
         return;
       }
     }
+
+    // 重複 ID 警告（仍允許，但提示）
+    const ids = cfg.announcements.map((a) => a.id).filter(Boolean);
+    if (new Set(ids).size !== ids.length) {
+      status.textContent = "納入清單有重複 ID，請先修正";
+      status.className = "status err";
+      return;
+    }
+
     status.textContent = "發布中…";
     status.className = "status";
 
-    const { owner, repo, path, branch } = CFG.github;
-    const apiBase = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
-    const content = utf8ToBase64(JSON.stringify(cfg, null, 2) + "\n");
+    const { path, archivePath, branch } = CFG.github;
     const message = ($("commitMsg").value || "").trim() || "chore: update app-config";
-
-    async function putOnce(sha) {
-      const body = { message, content, branch };
-      if (sha) body.sha = sha;
-      return fetch(apiBase, {
-        method: "PUT",
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      });
-    }
+    const publishedAt = cfg.updatedAt;
+    const archiveNext = mergeArchiveEntries(cfg.announcements, publishedAt);
 
     try {
-      let sha = await fetchLatestSha(apiBase, branch, token);
-      let putRes = await putOnce(sha);
-      // 409：遠端已變（例如剛發布過）→ 重抓 SHA 再試一次
-      if (putRes.status === 409) {
-        sha = await fetchLatestSha(apiBase, branch, token);
-        putRes = await putOnce(sha);
-      }
-      if (!putRes.ok) {
-        const errText = await putRes.text();
-        if (putRes.status === 409) {
-          status.textContent = "發布衝突（409）：檔案已被更新。請按「載入線上版」後再發布一次。";
+      const putCfg = await putFile({
+        path,
+        contentObj: cfg,
+        message,
+        token,
+        branch: branch || "main"
+      });
+      if (!putCfg.ok) {
+        const errText = await putCfg.text();
+        if (putCfg.status === 409) {
+          status.textContent = "發布衝突（409）：檔案已被更新。請按「載入最新版」後再發布一次。";
         } else {
-          status.textContent = "發布失敗：" + putRes.status + " " + errText.slice(0, 160);
+          status.textContent = "發布 app-config 失敗：" + putCfg.status + " " + errText.slice(0, 160);
         }
         status.className = "status err";
         return;
       }
-      status.textContent = "已發布。GitHub Pages 可能需數分鐘才生效。";
+
+      if (archivePath) {
+        const putArch = await putFile({
+          path: archivePath,
+          contentObj: archiveNext,
+          message: message + " (archive)",
+          token,
+          branch: branch || "main"
+        });
+        if (!putArch.ok) {
+          const errText = await putArch.text();
+          status.textContent = "app-config 已寫入，但 archive 失敗：" + putArch.status + " " + errText.slice(0, 120);
+          status.className = "status err";
+          return;
+        }
+      }
+
+      status.textContent = "已發布 app-config 與 ID 庫。GitHub Pages 可能需數分鐘才生效。";
       status.className = "status ok";
       persistPatToSession();
     } catch (e) {
@@ -839,7 +1362,7 @@
   $("gatePassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") tryGate();
   });
-  $("gatePassToggle").addEventListener("click", toggleGatePassVisibility);
+  $("gatePassToggle").addEventListener("click", () => togglePasswordVisibility("gatePassword", "gatePassToggle"));
   $("logoutBtn").addEventListener("click", lockUI);
   $("themeBtn").addEventListener("click", () => {
     const cur = document.documentElement.getAttribute("data-theme");
@@ -852,7 +1375,7 @@
   $("downloadBtn").addEventListener("click", downloadJSON);
   $("publishBtn").addEventListener("click", publish);
   $("fillStoreBtn").addEventListener("click", fillDefaultStoreURL);
-  $("patToggle").addEventListener("click", togglePatVisibility);
+  $("patToggle").addEventListener("click", () => togglePasswordVisibility("pat", "patToggle"));
   $("pat").addEventListener("change", persistPatToSession);
   $("pat").addEventListener("blur", persistPatToSession);
   $("previewResetBtn").addEventListener("click", resetPreviewFlow);
@@ -861,18 +1384,49 @@
   $("updTarget").addEventListener("input", updateVersionHints);
   $("updTarget").addEventListener("change", updateVersionHints);
 
+  $("annAddBtn").addEventListener("click", () => addDraft());
+  $("annDupBtn").addEventListener("click", duplicateSelected);
+  $("annDelBtn").addEventListener("click", deleteSelected);
+  $("annUpBtn").addEventListener("click", () => moveSelected(-1));
+  $("annDownBtn").addEventListener("click", () => moveSelected(1));
+  $("annLibraryBtn").addEventListener("click", async () => {
+    await fetchArchive();
+    openLibrary();
+  });
+  $("idLibraryClose").addEventListener("click", closeLibrary);
+  document.querySelectorAll("[data-close-library]").forEach((el) => {
+    el.addEventListener("click", closeLibrary);
+  });
+  $("libApplyBtn").addEventListener("click", applyLibraryToDrafts);
+
+  $("annMaintenance").addEventListener("change", () => {
+    if ($("annMaintenance").checked) {
+      $("annFrequency").value = "once";
+    }
+    updateFrequencyUI();
+    pullEditorIntoDraft();
+    renderAnnList();
+    bumpPreview();
+  });
+
   [
-    "annEnabled", "annMaintenance", "annId", "annStyle",
+    "annEnabled", "annId", "annFrequency", "annStyle",
     "annTitle", "annBody", "annCtaLabel", "annCtaURL",
     "updMode", "updTarget", "updStore", "updTitle", "updMessage"
   ].forEach((id) => {
-    $(id).addEventListener("input", () => {
-      previewPhase = "auto";
-      updatePreview();
+    const el = $(id);
+    if (!el) return;
+    el.addEventListener("input", () => {
+      if (id === "annFrequency") updateFrequencyUI();
+      pullEditorIntoDraft();
+      renderAnnList();
+      bumpPreview();
     });
-    $(id).addEventListener("change", () => {
-      previewPhase = "auto";
-      updatePreview();
+    el.addEventListener("change", () => {
+      if (id === "annFrequency") updateFrequencyUI();
+      pullEditorIntoDraft();
+      renderAnnList();
+      bumpPreview();
     });
   });
 
@@ -885,11 +1439,12 @@
     el.addEventListener("input", () => {
       el.value = el.value.replace(/\D/g, "");
       syncAllDatetimes();
-      previewPhase = "auto";
-      updatePreview();
+      pullEditorIntoDraft();
+      bumpPreview();
     });
     el.addEventListener("blur", () => {
       syncAllDatetimes();
+      pullEditorIntoDraft();
       updatePreview();
     });
   });
@@ -918,6 +1473,9 @@
   initTheme();
   initCollapsiblePanels();
   updateVersionHints();
+  drafts = [];
+  renderAnnList();
+  pushDraftToEditor();
   syncAllDatetimes();
   if (sessionStorage.getItem(SESSION_KEY) === "1") {
     unlockUI();

@@ -10,8 +10,11 @@ window.STOCKCALENDAR_ADMIN = {
     owner: "jimmy77733",
     repo: "stockcalendar-config",
     path: "docs/app-config.json",
+    archivePath: "docs/announcement-archive.json",
     branch: "main"
   },
   pagesConfigURL: "https://jimmy77733.github.io/stockcalendar-config/app-config.json",
-  rawConfigURL: "https://raw.githubusercontent.com/jimmy77733/stockcalendar-config/main/docs/app-config.json"
+  rawConfigURL: "https://raw.githubusercontent.com/jimmy77733/stockcalendar-config/main/docs/app-config.json",
+  pagesArchiveURL: "https://jimmy77733.github.io/stockcalendar-config/announcement-archive.json",
+  rawArchiveURL: "https://raw.githubusercontent.com/jimmy77733/stockcalendar-config/main/docs/announcement-archive.json"
 };

@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>股帳曆｜公告推播站</title>
-  <link rel="stylesheet" href="./styles.css?v=20260802g" />
-  <script src="./config.js?v=20260802g"></script>
+  <link rel="stylesheet" href="./styles.css?v=20260802h" />
+  <script src="./config.js?v=20260802h"></script>
 </head>
 <body>
   <div class="shell">
@@ -27,7 +27,7 @@
       <div class="topbar">
         <div>
           <h1>股帳曆｜公告推播站</h1>
-          <p class="sub">編輯後發布會寫入 <code>docs/app-config.json</code>（GitHub Pages）。App：先版本更新，再公告；維護中會擋住操作。</p>
+          <p class="sub">編輯後發布會寫入 <code>docs/app-config.json</code> 與公告 ID 庫。App：先版本更新，再依序翻頁公告；維護中會擋住操作。</p>
         </div>
         <div class="actions">
           <button class="btn secondary" type="button" id="themeBtn">切換深／淺</button>
@@ -54,109 +54,134 @@
             </div>
             <div class="card-body panel-body">
               <p class="hint">
-                <strong>啟用公告</strong>：關掉＝完全不顯示。<br />
-                <strong>維護中</strong>：開啟後使用者無法關閉公告、無法進入 App 功能（請一併啟用公告並填標題／內文後發布）。
+                可同時編輯多則；勾「納入本次」者會依清單順序寫入 App。<br />
+                <strong>單次</strong>：關閉後永久不再顯示（同 ID）。<strong>循環</strong>：台北日每天最多一次；左下可勾「不再顯示」永久關閉。<br />
+                <strong>維護中</strong>：最多一則，全螢幕阻擋且種類鎖為單次。
               </p>
-              <div class="toggle-row">
-                <label class="toggle-card toggle-card--ok">
-                  <input type="checkbox" id="annEnabled" />
-                  <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
-                  <span class="toggle-copy">
-                    <strong>啟用公告</strong>
-                    <small>關閉後完全不顯示</small>
-                  </span>
-                </label>
-                <label class="toggle-card toggle-card--danger">
-                  <input type="checkbox" id="annMaintenance" />
-                  <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
-                  <span class="toggle-copy">
-                    <strong>維護中</strong>
-                    <small>全螢幕阻擋，無法關閉</small>
-                  </span>
-                </label>
+              <div class="ann-toolbar">
+                <button type="button" class="btn secondary" id="annAddBtn">新增</button>
+                <button type="button" class="btn secondary" id="annLibraryBtn">ID 庫</button>
+                <button type="button" class="btn secondary" id="annDupBtn">複製</button>
+                <button type="button" class="btn secondary" id="annDelBtn">刪除</button>
+                <button type="button" class="btn secondary" id="annUpBtn">上移</button>
+                <button type="button" class="btn secondary" id="annDownBtn">下移</button>
               </div>
-              <div class="row">
-                <div class="field"><label>ID（非維護時，關閉後記住）</label><input id="annId" placeholder="2026-08-welcome" /></div>
-                <div class="field">
-                  <label>樣式</label>
-                  <select id="annStyle">
-                    <option value="fullscreen">fullscreen（極醒目）</option>
-                    <option value="modal">modal</option>
-                    <option value="banner">banner</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
-              </div>
-              <div class="row">
-                <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
-              </div>
-              <div class="row">
-                <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填，如：前往查看" /></div>
-                <div class="field">
-                  <label>CTA 連結</label>
-                  <select id="annCtaPreset">
-                    <option value="">自訂／外部網址（下方填）</option>
-                    <option value="stockcalendar://close">關閉公告</option>
-                    <option value="stockcalendar://calendar">日曆</option>
-                    <option value="stockcalendar://analytics">資產分析</option>
-                    <option value="stockcalendar://accounts">資金帳戶</option>
-                    <option value="stockcalendar://holdings">持股列表</option>
-                    <option value="stockcalendar://battlefield">加權戰線</option>
-                    <option value="stockcalendar://settings">設定</option>
-                    <option value="stockcalendar://aichat">AI 對話</option>
-                  </select>
-                  <input id="annCtaURL" placeholder="stockcalendar://… 或 https://…" style="margin-top:8px;" />
-                  <span class="hint" style="margin:4px 0 0;">App 內頁面會關閉公告並導向該功能；亦可填 App Store／網頁連結。</span>
-                </div>
-              </div>
+              <div id="annList" class="ann-list" aria-label="公告清單"></div>
 
-              <div class="datetime-pair">
-                <div class="datetime-block">
-                  <div class="dt-head">
-                    <label>開始時間</label>
-                    <button type="button" class="btn secondary dt-clear" data-clear="starts">清空</button>
+              <div id="annEditor" class="ann-editor">
+                <div class="toggle-row">
+                  <label class="toggle-card toggle-card--ok">
+                    <input type="checkbox" id="annEnabled" />
+                    <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
+                    <span class="toggle-copy">
+                      <strong>啟用公告</strong>
+                      <small>關閉後完全不顯示</small>
+                    </span>
+                  </label>
+                  <label class="toggle-card toggle-card--danger">
+                    <input type="checkbox" id="annMaintenance" />
+                    <span class="toggle-ui" aria-hidden="true"><span class="toggle-knob"></span></span>
+                    <span class="toggle-copy">
+                      <strong>維護中</strong>
+                      <small>全螢幕阻擋，無法關閉</small>
+                    </span>
+                  </label>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label>ID <span id="annIdLockHint" class="hint-inline"></span></label>
+                    <input id="annId" placeholder="2026-08-welcome" />
                   </div>
-                  <p class="hint dt-hint">留空＝立刻可顯示（台北＋08:00）</p>
-                  <div class="datetime-grid" data-dt="starts">
-                    <label class="dt-part">年<input id="startsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
-                    <label class="dt-part">月<input id="startsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
-                    <label class="dt-part">日<input id="startsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
-                    <span class="dt-sep" aria-hidden="true">·</span>
-                    <label class="dt-part">時<input id="startsH" inputmode="numeric" maxlength="2" placeholder="09" /></label>
-                    <span class="dt-colon" aria-hidden="true">:</span>
-                    <label class="dt-part">分<input id="startsMin" inputmode="numeric" maxlength="2" placeholder="00" /></label>
+                  <div class="field">
+                    <label>種類</label>
+                    <select id="annFrequency">
+                      <option value="once">單次（關閉後永久）</option>
+                      <option value="daily">循環（每日一次）</option>
+                    </select>
+                    <span class="hint" id="annFrequencyHint" style="margin:4px 0 0;"></span>
                   </div>
-                  <div class="dt-meta">
-                    <code id="startsISO" class="dt-iso">（未設定）</code>
-                    <span id="startsErr" class="dt-err" hidden></span>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label>樣式</label>
+                    <select id="annStyle">
+                      <option value="fullscreen">fullscreen（極醒目）</option>
+                      <option value="modal">modal</option>
+                      <option value="banner">banner</option>
+                    </select>
                   </div>
-                  <input type="hidden" id="annStarts" value="" />
+                  <div class="field"><label>標題</label><input id="annTitle" placeholder="留空＋內文空＝不顯示" /></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>內文</label><textarea id="annBody" placeholder="公告內容"></textarea></div>
+                </div>
+                <div class="row">
+                  <div class="field"><label>CTA 按鈕文字</label><input id="annCtaLabel" placeholder="選填，如：前往查看" /></div>
+                  <div class="field">
+                    <label>CTA 連結</label>
+                    <select id="annCtaPreset">
+                      <option value="">自訂／外部網址（下方填）</option>
+                      <option value="stockcalendar://close">關閉公告</option>
+                      <option value="stockcalendar://calendar">日曆</option>
+                      <option value="stockcalendar://analytics">資產分析</option>
+                      <option value="stockcalendar://accounts">資金帳戶</option>
+                      <option value="stockcalendar://holdings">持股列表</option>
+                      <option value="stockcalendar://battlefield">加權戰線</option>
+                      <option value="stockcalendar://settings">設定</option>
+                      <option value="stockcalendar://aichat">AI 對話</option>
+                    </select>
+                    <input id="annCtaURL" placeholder="stockcalendar://… 或 https://…" style="margin-top:8px;" />
+                    <span class="hint" style="margin:4px 0 0;">App 內頁面會關閉公告並導向該功能；亦可填 App Store／網頁連結。</span>
+                  </div>
                 </div>
 
-                <div class="datetime-block">
-                  <div class="dt-head">
-                    <label>結束時間</label>
-                    <button type="button" class="btn secondary dt-clear" data-clear="ends">清空</button>
+                <div class="datetime-pair">
+                  <div class="datetime-block">
+                    <div class="dt-head">
+                      <label>開始時間</label>
+                      <button type="button" class="btn secondary dt-clear" data-clear="starts">清空</button>
+                    </div>
+                    <p class="hint dt-hint">留空＝立刻可顯示（台北＋08:00）</p>
+                    <div class="datetime-grid" data-dt="starts">
+                      <label class="dt-part">年<input id="startsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
+                      <label class="dt-part">月<input id="startsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
+                      <label class="dt-part">日<input id="startsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
+                      <span class="dt-sep" aria-hidden="true">·</span>
+                      <label class="dt-part">時<input id="startsH" inputmode="numeric" maxlength="2" placeholder="09" /></label>
+                      <span class="dt-colon" aria-hidden="true">:</span>
+                      <label class="dt-part">分<input id="startsMin" inputmode="numeric" maxlength="2" placeholder="00" /></label>
+                    </div>
+                    <div class="dt-meta">
+                      <code id="startsISO" class="dt-iso">（未設定）</code>
+                      <span id="startsErr" class="dt-err" hidden></span>
+                    </div>
+                    <input type="hidden" id="annStarts" value="" />
                   </div>
-                  <p class="hint dt-hint">留空＝不自動下架</p>
-                  <div class="datetime-grid" data-dt="ends">
-                    <label class="dt-part">年<input id="endsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
-                    <label class="dt-part">月<input id="endsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
-                    <label class="dt-part">日<input id="endsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
-                    <span class="dt-sep" aria-hidden="true">·</span>
-                    <label class="dt-part">時<input id="endsH" inputmode="numeric" maxlength="2" placeholder="23" /></label>
-                    <span class="dt-colon" aria-hidden="true">:</span>
-                    <label class="dt-part">分<input id="endsMin" inputmode="numeric" maxlength="2" placeholder="59" /></label>
+
+                  <div class="datetime-block">
+                    <div class="dt-head">
+                      <label>結束時間</label>
+                      <button type="button" class="btn secondary dt-clear" data-clear="ends">清空</button>
+                    </div>
+                    <p class="hint dt-hint">留空＝不自動下架</p>
+                    <div class="datetime-grid" data-dt="ends">
+                      <label class="dt-part">年<input id="endsY" inputmode="numeric" maxlength="4" placeholder="2026" /></label>
+                      <label class="dt-part">月<input id="endsM" inputmode="numeric" maxlength="2" placeholder="08" /></label>
+                      <label class="dt-part">日<input id="endsD" inputmode="numeric" maxlength="2" placeholder="01" /></label>
+                      <span class="dt-sep" aria-hidden="true">·</span>
+                      <label class="dt-part">時<input id="endsH" inputmode="numeric" maxlength="2" placeholder="23" /></label>
+                      <span class="dt-colon" aria-hidden="true">:</span>
+                      <label class="dt-part">分<input id="endsMin" inputmode="numeric" maxlength="2" placeholder="59" /></label>
+                    </div>
+                    <div class="dt-meta">
+                      <code id="endsISO" class="dt-iso">（未設定）</code>
+                      <span id="endsErr" class="dt-err" hidden></span>
+                    </div>
+                    <input type="hidden" id="annEnds" value="" />
                   </div>
-                  <div class="dt-meta">
-                    <code id="endsISO" class="dt-iso">（未設定）</code>
-                    <span id="endsErr" class="dt-err" hidden></span>
-                  </div>
-                  <input type="hidden" id="annEnds" value="" />
                 </div>
               </div>
+              <p id="annEditorEmpty" class="hint ann-editor-empty hidden">尚未有公告草稿，請按「新增」或從「ID 庫」納入。</p>
             </div>
           </section>
 
@@ -293,8 +318,46 @@
         </div>
       </div>
     </div>
+
+    <div id="idLibraryModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="idLibraryTitle">
+      <div class="modal-backdrop" data-close-library></div>
+      <div class="modal-panel">
+        <div class="modal-head">
+          <h2 id="idLibraryTitle">公告 ID 庫</h2>
+          <button type="button" class="btn secondary icon-btn" id="idLibraryClose" aria-label="關閉">✕</button>
+        </div>
+        <p class="hint">依 ID 查看歷史快照；可改標題／內文後納入本次（ID 唯讀）。缺種類者顯示為單次。</p>
+        <div class="library-layout">
+          <div id="libraryIdList" class="library-ids"></div>
+          <div class="library-detail">
+            <div id="libraryHistory" class="library-history"></div>
+            <div id="libraryEdit" class="library-edit hidden">
+              <div class="row">
+                <div class="field"><label>ID（唯讀）</label><input id="libId" readonly /></div>
+                <div class="field"><label>種類</label>
+                  <select id="libFrequency">
+                    <option value="once">單次</option>
+                    <option value="daily">循環</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field"><label>標題</label><input id="libTitle" /></div>
+              </div>
+              <div class="row">
+                <div class="field"><label>內文</label><textarea id="libBody" rows="4"></textarea></div>
+              </div>
+              <div class="actions">
+                <button type="button" class="btn" id="libApplyBtn">納入本次</button>
+              </div>
+            </div>
+            <p id="libraryEmpty" class="hint">尚無歷史。發布公告後會寫入此庫。</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script src="./app.js?v=20260802g"></script>
+  <script src="./app.js?v=20260802h"></script>
 </body>
 </html>

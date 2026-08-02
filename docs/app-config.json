@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T09:40:40.056Z",
+  "updatedAt": "2026-08-02T10:30:00.000Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
@@ -9,17 +9,20 @@
     "title": "有新版本可用",
     "message": "建議更新以獲得最新功能與修正。"
   },
-  "announcement": {
-    "enabled": true,
-    "id": "test-2026-08-02-d",
-    "style": "modal",
-    "title": "測試公告4",
-    "body": "123456",
-    "accent": "warning",
-    "ctaLabel": null,
-    "ctaURL": "https://apps.apple.com/app/id6790064657",
-    "dismissible": true,
-    "startsAt": null,
-    "endsAt": null
-  }
+  "announcements": [
+    {
+      "enabled": true,
+      "id": "test-2026-08-02-d",
+      "style": "modal",
+      "title": "測試公告4",
+      "body": "123456",
+      "accent": "warning",
+      "ctaLabel": null,
+      "ctaURL": "https://apps.apple.com/app/id6790064657",
+      "dismissible": true,
+      "startsAt": null,
+      "endsAt": null,
+      "frequency": "once"
+    }
+  ]
 }

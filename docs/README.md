@@ -4,7 +4,8 @@ Publish this folder via **Pages → Deploy from a branch → `/docs`**.
 
 | File | Purpose |
 |------|---------|
-| `app-config.json` | App-facing remote config |
+| `app-config.json` | App-facing remote config（`announcements[]`＋`frequency`） |
+| `announcement-archive.json` | 公告 ID 庫／歷史快照（後台雙寫） |
 | `admin/` | Publish console (password + PAT) |
 | `.nojekyll` | Disable Jekyll processing |
 
