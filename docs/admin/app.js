@@ -359,13 +359,22 @@
     $("updStore").value = CFG.defaultAppStoreURL || "https://apps.apple.com/app/id6790064657";
   }
 
-  function togglePatVisibility() {
-    const input = $("pat");
-    const btn = $("patToggle");
+  function togglePasswordVisibility(inputId, btnId) {
+    const input = $(inputId);
+    const btn = $(btnId);
+    if (!input || !btn) return;
     const show = input.type === "password";
     input.type = show ? "text" : "password";
     btn.innerHTML = show ? EYE_OFF : EYE_OPEN;
-    btn.setAttribute("aria-label", show ? "隱藏 PAT" : "顯示 PAT");
+    btn.setAttribute("aria-label", show ? "隱藏密碼" : "顯示密碼");
+  }
+
+  function togglePatVisibility() {
+    togglePasswordVisibility("pat", "patToggle");
+  }
+
+  function toggleGatePassVisibility() {
+    togglePasswordVisibility("gatePassword", "gatePassToggle");
   }
 
   function willShowAnnouncement(ann) {
@@ -766,6 +775,7 @@
   $("gatePassword").addEventListener("keydown", (e) => {
     if (e.key === "Enter") tryGate();
   });
+  $("gatePassToggle").addEventListener("click", toggleGatePassVisibility);
   $("logoutBtn").addEventListener("click", lockUI);
   $("themeBtn").addEventListener("click", () => {
     const cur = document.documentElement.getAttribute("data-theme");
