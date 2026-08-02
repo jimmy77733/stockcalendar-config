@@ -1,9 +1,9 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T09:04:45.844Z",
+  "updatedAt": "2026-08-02T09:06:21.141Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
-    "mode": "off",
+    "mode": "soft",
     "targetVersion": "1.4",
     "storeURL": "https://apps.apple.com/us/app/%E8%82%A1%E5%B8%B3%E6%9B%86/id6790064657",
     "title": "有新版本可用",
@@ -11,9 +11,9 @@
   },
   "announcement": {
     "enabled": true,
-    "id": "test-2026-08-02-c",
+    "id": "test-2026-08-02-d",
     "style": "modal",
-    "title": "測試公告2",
+    "title": "測試公告3",
     "body": "1234",
     "accent": "warning",
     "ctaLabel": "測試按鈕",
