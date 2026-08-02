@@ -836,11 +836,9 @@
   function buildAnnouncementCard(ann, pageIndex, pageCount) {
     const maintenance = ann.dismissible === false;
     const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
+    const fill = maintenance || style === "fullscreen";
     const wrap = document.createElement("div");
-    wrap.style.width = "100%";
-    wrap.style.display = "flex";
-    wrap.style.flexDirection = "column";
-    wrap.style.alignItems = style === "banner" ? "stretch" : "center";
+    wrap.className = "ann-preview-wrap" + (fill ? " is-fill" : "");
 
     const card = document.createElement("div");
     card.className = "ann-card " + style + (maintenance ? " maintenance" : "");
