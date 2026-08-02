@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T10:48:40.772Z",
+  "updatedAt": "2026-08-02T10:54:17.015Z",
   "entries": [
+    {
+      "publishedAt": "2026-08-02T10:54:17.015Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-02-7na8",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "加權戰線（全新）\n●以多空對戰呈現加權走勢\n●兵種包含步兵、重兵、坦克、直升機\n●可發射多方／空方火箭\n●主堡對話泡泡（含發射台詞）\n●盤中依行情推進戰線，並顯示動態價格區間\n\n借貸帳戶\n●維持率會隨擔保來源（持股市值／資金）即時變動\n●擔保來源若為持股帳戶，可再勾選哪些持股作為擔保（預設收合）\n●儀表刻度支援更高維持率，指針不再卡在右側\n\n優化系統\n●清理一些問題\n\n設定頁面\n●新增回饋表單",
+        "accent": "brand",
+        "ctaLabel": "前往加權戰線",
+        "ctaURL": "stockcalendar://battlefield",
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-02T10:48:40.772Z",
       "announcement": {
