@@ -307,10 +307,7 @@ textarea { min-height: 88px; resize: vertical; }
   color: #fff;
   box-shadow: 0 12px 28px rgba(0,0,0,0.35);
   border: none;
-  background:
-    linear-gradient(180deg, rgba(40,28,16,0.28), rgba(40,28,16,0.58)),
-    url("./assets/announcement-bg.jpg") center / cover no-repeat;
-  background-color: #E8DFD2;
+  background: #5A4636;
 }
 .ann-card.modal {
   width: 100%;
@@ -328,9 +325,7 @@ textarea { min-height: 88px; resize: vertical; }
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 20px rgba(0,0,0,0.28);
-  background:
-    linear-gradient(180deg, rgba(40,28,16,0.34), rgba(40,28,16,0.66)),
-    url("./assets/announcement-bg.jpg") center / cover no-repeat;
+  background: #5A4636;
 }
 .ann-card.fullscreen .ann-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .ann-card.banner {
@@ -503,10 +498,7 @@ textarea { min-height: 88px; resize: vertical; }
   color: #fff;
   box-shadow: 0 14px 30px rgba(0,0,0,0.28);
   border: none;
-  background:
-    linear-gradient(180deg, rgba(40,28,16,0.30), rgba(40,28,16,0.58)),
-    url("./assets/announcement-bg.jpg") center / cover no-repeat;
-  background-color: #E8DFD2;
+  background: #5A4636;
 }
 .upd-card.force { border: none; }
 .upd-card .upd-tag {
