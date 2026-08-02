@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T08:52:03.835Z",
+  "updatedAt": "2026-08-02T08:53:06.581Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "off",
@@ -13,7 +13,7 @@
     "enabled": true,
     "id": "test-2026-08-02-a",
     "style": "modal",
-    "title": "測試公告",
+    "title": "測試公告2",
     "body": "若你看得到這段，遠端公告正常。",
     "accent": "warning",
     "ctaLabel": null,
