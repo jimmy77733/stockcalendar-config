@@ -292,7 +292,10 @@ textarea { min-height: 88px; resize: vertical; }
 .ann-layer.banner-mode { align-items: flex-end; padding-bottom: 52px; }
 .ann-layer.fullscreen-mode {
   align-items: stretch;
-  padding: 10px 8px 14px;
+  padding: 0;
+}
+.ann-layer.fullscreen-mode:has(.ann-card.maintenance) {
+  padding: 0;
 }
 .ann-layer.modal-mode {
   align-items: center;
@@ -338,9 +341,66 @@ textarea { min-height: 88px; resize: vertical; }
   background: rgba(139,105,20,0.85); color: #fff;
   padding: 3px 8px; border-radius: 999px; margin-bottom: 8px;
 }
-.ann-card.maintenance .tag {
-  background: rgba(220,38,38,0.9);
+.ann-card.maintenance {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+  background: #C9897E;
+  overflow: hidden;
 }
+.ann-card.maintenance .hazard {
+  height: 28px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  background: #1C1917;
+}
+.ann-card.maintenance .hazard-track {
+  position: absolute;
+  inset: -40% -50%;
+  width: 200%;
+  height: 180%;
+  background: repeating-linear-gradient(
+    -55deg,
+    #FACC15 0 12px,
+    #1C1917 12px 24px
+  );
+  animation: hazard-marquee 1.1s linear infinite;
+}
+@keyframes hazard-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-24px); }
+}
+.ann-card.maintenance .ann-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 18px 16px;
+  gap: 8px;
+}
+.ann-card.maintenance .tag {
+  margin-bottom: 0;
+  align-self: flex-start;
+  background: rgba(220,38,38,0.95);
+  color: #fff;
+}
+.ann-card.maintenance h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+.ann-card.maintenance p {
+  margin: 0;
+}
+.ann-card.maintenance .cta-row {
+  margin-top: 14px;
+}
+.ann-card.maintenance .cta.primary { background: #8B6914; }
 .ann-card h3 { margin: 0 0 6px; font-size: 1.05rem; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 .ann-card.fullscreen h3 { font-size: 1.25rem; }
 .ann-card.modal h3 { font-size: 0.98rem; }

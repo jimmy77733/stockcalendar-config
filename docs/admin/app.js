@@ -549,16 +549,30 @@
     const style = maintenance ? "fullscreen" : (ann.style || "fullscreen");
     const card = document.createElement("div");
     card.className = "ann-card " + style + (maintenance ? " maintenance" : "");
-    // 無邊框
     card.style.border = "none";
 
-    const tag = document.createElement("div");
-    tag.className = "tag";
-    tag.textContent = maintenance ? "維護中" : "公告";
-    card.appendChild(tag);
+    if (maintenance) {
+      const top = document.createElement("div");
+      top.className = "hazard";
+      top.innerHTML = '<div class="hazard-track" aria-hidden="true"></div>';
+      card.appendChild(top);
+    }
+
+    if (!maintenance) {
+      const tag = document.createElement("div");
+      tag.className = "tag";
+      tag.textContent = "公告";
+      card.appendChild(tag);
+    }
 
     const bodyWrap = document.createElement("div");
     bodyWrap.className = "ann-body";
+    if (maintenance) {
+      const tag = document.createElement("div");
+      tag.className = "tag";
+      tag.textContent = "維護中";
+      bodyWrap.appendChild(tag);
+    }
     if (ann.title) {
       const h = document.createElement("h3");
       h.textContent = ann.title;
@@ -569,7 +583,6 @@
       p.textContent = ann.body;
       bodyWrap.appendChild(p);
     }
-    card.appendChild(bodyWrap);
 
     const row = document.createElement("div");
     row.className = "cta-row";
@@ -608,7 +621,15 @@
       });
       row.appendChild(close);
     }
-    if (row.childNodes.length) card.appendChild(row);
+    if (row.childNodes.length) bodyWrap.appendChild(row);
+    card.appendChild(bodyWrap);
+
+    if (maintenance) {
+      const bottom = document.createElement("div");
+      bottom.className = "hazard";
+      bottom.innerHTML = '<div class="hazard-track" aria-hidden="true"></div>';
+      card.appendChild(bottom);
+    }
     return card;
   }
 
