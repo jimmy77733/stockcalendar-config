@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T10:54:17.015Z",
+  "updatedAt": "2026-08-19T11:58:54.868Z",
   "entries": [
+    {
+      "publishedAt": "2026-08-19T11:58:54.868Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-19-p4n0",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【1.5】\n・全新支援美股記帳與報價（Yahoo／Stooq，可選 Finnhub）\n・全新標普戰線\n・日曆／分析可切換台、美、全；「全」可依報表幣別（台幣／美元）折算顯示\n・介面支援中文／英文；報表幣別與市場範圍可在設定調整\n・美股亦可設定開盤／盤中／收盤推播時段\n・日曆與分析頁面改版，操作更清楚",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-02T10:54:17.015Z",
       "announcement": {
