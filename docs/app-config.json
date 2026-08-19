@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-02T10:54:17.015Z",
+  "updatedAt": "2026-08-19T11:58:54.868Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.4",
+    "targetVersion": "1.5",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可用",
     "message": "建議更新以獲得最新功能與修正。"
@@ -12,13 +12,13 @@
   "announcements": [
     {
       "enabled": true,
-      "id": "ann-2026-08-02-7na8",
+      "id": "ann-2026-08-19-p4n0",
       "style": "modal",
       "title": "本次更新的功能！！",
-      "body": "加權戰線（全新）\n●以多空對戰呈現加權走勢\n●兵種包含步兵、重兵、坦克、直升機\n●可發射多方／空方火箭\n●主堡對話泡泡（含發射台詞）\n●盤中依行情推進戰線，並顯示動態價格區間\n\n借貸帳戶\n●維持率會隨擔保來源（持股市值／資金）即時變動\n●擔保來源若為持股帳戶，可再勾選哪些持股作為擔保（預設收合）\n●儀表刻度支援更高維持率，指針不再卡在右側\n\n優化系統\n●清理一些問題\n\n設定頁面\n●新增回饋表單",
+      "body": "【1.5】\n・全新支援美股記帳與報價（Yahoo／Stooq，可選 Finnhub）\n・全新標普戰線\n・日曆／分析可切換台、美、全；「全」可依報表幣別（台幣／美元）折算顯示\n・介面支援中文／英文；報表幣別與市場範圍可在設定調整\n・美股亦可設定開盤／盤中／收盤推播時段\n・日曆與分析頁面改版，操作更清楚",
       "accent": "brand",
-      "ctaLabel": "前往加權戰線",
-      "ctaURL": "stockcalendar://battlefield",
+      "ctaLabel": null,
+      "ctaURL": null,
       "dismissible": true,
       "startsAt": null,
       "endsAt": null,
