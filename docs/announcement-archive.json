@@ -1,7 +1,41 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-19T11:58:54.868Z",
+  "updatedAt": "2026-08-21T01:09:50.174Z",
   "entries": [
+    {
+      "publishedAt": "2026-08-21T01:09:50.174Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-21-07sx",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【1.6】定期定額與帳戶幣別升級\n\n• 新增定期定額：可設定頻率、提醒或自動入帳，一鍵寫入持股帳戶\n• 到期提醒與配股／配息建議整合，有多筆時會上下輪播顯示\n• 扣款會留下資金帳戶紀錄；刪除排程後，已買入與扣款紀錄仍保留\n• 美股可用台幣帳戶扣款，入帳時依匯率自動折算\n• 支援帳戶幣別（台幣／美元）；跨幣持股會換算並標示「美」或「台」\n• 新增交易依台股／美股顯示幣別單位；持股分佈可截圖分享\n• 日曆日期排版與載入優化\n\n美股日曆優化調整中，請稍後~",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-21T01:09:50.174Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-19-p4n0",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【1.5】\n・全新支援美股記帳與報價（Yahoo／Stooq，可選 Finnhub）\n・全新標普戰線\n・日曆／分析可切換台、美、全；「全」可依報表幣別（台幣／美元）折算顯示\n・介面支援中文／英文；報表幣別與市場範圍可在設定調整\n・美股亦可設定開盤／盤中／收盤推播時段\n・日曆與分析頁面改版，操作更清楚",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-19T11:58:54.868Z",
       "announcement": {
