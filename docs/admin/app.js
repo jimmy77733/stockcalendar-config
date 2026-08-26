@@ -356,7 +356,7 @@
 
   /** 動態解析到的行銷版（App Store → GitHub Info.plist → config 後備） */
   let resolvedAppVersion = {
-    version: CFG.currentAppVersion || "2.0",
+    version: CFG.currentAppVersion || "1.7",
     source: "本機後備"
   };
 
@@ -442,7 +442,7 @@
     }
 
     resolvedAppVersion = {
-      version: CFG.currentAppVersion || "2.0",
+      version: CFG.currentAppVersion || "1.7",
       source: "本機後備 config.js"
     };
     updateVersionHints();
@@ -469,7 +469,7 @@
       return;
     }
     if (!/^\d+(\.\d+)*$/.test(target)) {
-      hint.textContent = "格式建議為數字與點，例如 2.0 或 1.6.0（不要填 build）";
+      hint.textContent = "格式建議為數字與點，例如 1.7 或 1.7.0（不要填 build）";
       hint.style.color = "var(--danger)";
       return;
     }

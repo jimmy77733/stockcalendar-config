@@ -6,7 +6,7 @@ window.STOCKCALENDAR_ADMIN = {
    * 後備參考版（僅在 App Store／GitHub 抓取失敗時使用）。
    * 請與 App `MARKETING_VERSION`／`CFBundleShortVersionString` 對齊；正式來源改由 admin 動態抓取。
    */
-  currentAppVersion: "2.0",
+  currentAppVersion: "1.7",
   /** App Store 數字 ID，用於 lookup 目前商店行銷版 */
   appStoreId: "6790064657",
   /** 主 App 倉庫 Info.plist（開發主線行銷版） */
