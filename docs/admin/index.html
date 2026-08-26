@@ -202,11 +202,13 @@
             </div>
             <div class="card-body panel-body">
               <div class="version-chip">
-                版本格式：<strong>major.minor</strong>（例 <strong>1.4</strong>）
-                · 目前 App 行銷版參考：<strong id="currentAppVersionLabel">—</strong>
+                版本格式：<strong>major.minor</strong>（例 <strong>2.0</strong>）
+                · 目前 App 行銷版參考：<strong id="currentAppVersionLabel">抓取中…</strong>
+                <span id="currentAppVersionSource" class="hint" style="margin:0;display:inline;"></span>
               </div>
               <p class="hint">
-                本機 <code>CFBundleShortVersionString</code> ＜ <code>targetVersion</code> 才會顯示。勿填 build 號。
+                參考版優先讀 <strong>App Store</strong> 上架版，其次 GitHub App <code>Info.plist</code>；失敗才用本機後備。
+                本機 <code>CFBundleShortVersionString</code> ＜ <code>targetVersion</code> 才會顯示更新提示。勿填 build 號。
               </p>
               <div class="row">
                 <div class="field">
@@ -219,7 +221,7 @@
                 </div>
                 <div class="field">
                   <label>目標版本 targetVersion</label>
-                  <input id="updTarget" placeholder="1.4" />
+                  <input id="updTarget" placeholder="2.0" />
                   <span class="hint" id="updTargetHint" style="margin:4px 0 0;"></span>
                 </div>
               </div>

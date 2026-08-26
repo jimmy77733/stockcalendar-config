@@ -354,6 +354,12 @@
     return null;
   }
 
+  /** 動態解析到的行銷版（App Store → GitHub Info.plist → config 後備） */
+  let resolvedAppVersion = {
+    version: CFG.currentAppVersion || "2.0",
+    source: "本機後備"
+  };
+
   function parseVersionParts(v) {
     return String(v || "")
       .trim()
@@ -374,10 +380,85 @@
     return 0;
   }
 
+  function versionFromInfoPlist(xml) {
+    if (!xml || typeof xml !== "string") return "";
+    const re = /<key>\s*CFBundleShortVersionString\s*<\/key>\s*<string>\s*([^<]+)\s*<\/string>/i;
+    const m = xml.match(re);
+    return m ? String(m[1]).trim() : "";
+  }
+
+  async function fetchAppStoreMarketingVersion() {
+    const id = String(CFG.appStoreId || "6790064657").replace(/\D/g, "");
+    if (!id) return "";
+    const url =
+      "https://itunes.apple.com/lookup?id=" +
+      encodeURIComponent(id) +
+      "&country=tw&_=" +
+      Date.now();
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) throw new Error("App Store lookup HTTP " + res.status);
+    const data = await res.json();
+    const version = data && data.results && data.results[0] && data.results[0].version;
+    return version ? String(version).trim() : "";
+  }
+
+  async function fetchGitHubAppMarketingVersion() {
+    const url = CFG.appInfoPlistURL;
+    if (!url) return "";
+    const res = await fetch(url + (url.includes("?") ? "&" : "?") + "_=" + Date.now(), {
+      cache: "no-store"
+    });
+    if (!res.ok) throw new Error("Info.plist HTTP " + res.status);
+    const text = await res.text();
+    return versionFromInfoPlist(text);
+  }
+
+  async function resolveCurrentAppVersion() {
+    const label = $("currentAppVersionLabel");
+    const sourceEl = $("currentAppVersionSource");
+    if (label) label.textContent = "抓取中…";
+    if (sourceEl) sourceEl.textContent = "";
+
+    try {
+      const storeVer = await fetchAppStoreMarketingVersion();
+      if (storeVer) {
+        resolvedAppVersion = { version: storeVer, source: "App Store" };
+        updateVersionHints();
+        return resolvedAppVersion;
+      }
+    } catch (e) {
+      console.warn("[admin] App Store version lookup failed", e);
+    }
+
+    try {
+      const ghVer = await fetchGitHubAppMarketingVersion();
+      if (ghVer) {
+        resolvedAppVersion = { version: ghVer, source: "GitHub Info.plist" };
+        updateVersionHints();
+        return resolvedAppVersion;
+      }
+    } catch (e) {
+      console.warn("[admin] GitHub Info.plist version lookup failed", e);
+    }
+
+    resolvedAppVersion = {
+      version: CFG.currentAppVersion || "2.0",
+      source: "本機後備 config.js"
+    };
+    updateVersionHints();
+    return resolvedAppVersion;
+  }
+
   function updateVersionHints() {
-    const current = CFG.currentAppVersion || "1.4";
+    const current = resolvedAppVersion.version || CFG.currentAppVersion || "2.0";
     const label = $("currentAppVersionLabel");
     if (label) label.textContent = current;
+    const sourceEl = $("currentAppVersionSource");
+    if (sourceEl) {
+      sourceEl.textContent = resolvedAppVersion.source
+        ? "（來源：" + resolvedAppVersion.source + "）"
+        : "";
+    }
 
     const target = ($("updTarget").value || "").trim();
     const hint = $("updTargetHint");
@@ -388,7 +469,7 @@
       return;
     }
     if (!/^\d+(\.\d+)*$/.test(target)) {
-      hint.textContent = "格式建議為數字與點，例如 1.4 或 1.4.0（不要填 build）";
+      hint.textContent = "格式建議為數字與點，例如 2.0 或 1.6.0（不要填 build）";
       hint.style.color = "var(--danger)";
       return;
     }
@@ -397,7 +478,8 @@
       hint.textContent = "等於目前參考版 " + current + " → 已安裝此版的使用者不會被提醒";
       hint.style.color = "var(--text2)";
     } else if (cmp < 0) {
-      hint.textContent = "高於目前參考版 " + current + " → 現有 1.4 使用者會被提醒／強制（視模式）";
+      hint.textContent =
+        "高於目前參考版 " + current + " → 仍在使用 ≤" + current + " 的使用者會被提醒／強制（視模式）";
       hint.style.color = "var(--accent)";
     } else {
       hint.textContent = "低於目前參考版 " + current + " → 通常不會觸發（本機已較新）";
@@ -1162,6 +1244,7 @@
     const status = $("loadStatus");
     status.textContent = "載入中…";
     status.className = "status";
+    await resolveCurrentAppVersion();
     await fetchArchive();
     const urls = [CFG.pagesConfigURL, CFG.rawConfigURL];
     for (const url of urls) {
@@ -1486,6 +1569,7 @@
   initTheme();
   initCollapsiblePanels();
   updateVersionHints();
+  resolveCurrentAppVersion();
   drafts = [];
   renderAnnList();
   pushDraftToEditor();
