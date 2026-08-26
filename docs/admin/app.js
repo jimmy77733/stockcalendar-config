@@ -450,7 +450,7 @@
   }
 
   function updateVersionHints() {
-    const current = resolvedAppVersion.version || CFG.currentAppVersion || "2.0";
+    const current = resolvedAppVersion.version || CFG.currentAppVersion || "1.7";
     const label = $("currentAppVersionLabel");
     if (label) label.textContent = current;
     const sourceEl = $("currentAppVersionSource");
