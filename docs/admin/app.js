@@ -663,11 +663,18 @@
       "stockcalendar://close": "關閉公告",
       "stockcalendar://calendar": "日曆",
       "stockcalendar://analytics": "資產分析",
+      "stockcalendar://mt": "Market Track",
       "stockcalendar://accounts": "資金帳戶",
       "stockcalendar://holdings": "持股列表",
       "stockcalendar://battlefield": "加權戰線",
       "stockcalendar://settings": "設定",
-      "stockcalendar://aichat": "AI 對話"
+      "stockcalendar://aichat": "AI 對話",
+      "stockcalendar://offline": "離線資料庫",
+      "stockcalendar://notifications": "推播設定",
+      "stockcalendar://finmind": "FinMind Token 教學",
+      "stockcalendar://finnhub": "Finnhub Token 教學",
+      "https://finmindtrade.com/analysis/#/dashboards/new-info": "FinMind 申請頁",
+      "https://finnhub.io/register": "Finnhub 註冊頁"
     };
     return map[(url || "").trim()] || null;
   }
