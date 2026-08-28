@@ -1,7 +1,41 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-21T01:33:09.855Z",
+  "updatedAt": "2026-08-28T00:13:42.964Z",
   "entries": [
+    {
+      "publishedAt": "2026-08-28T00:13:42.964Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-28-ilks",
+        "style": "modal",
+        "title": "MT 行情中心使用說明",
+        "body": "使用 MT 完整功能功能需要先去官網註冊後獲得token，台股需要去 FinMind 註冊一組，美股需要去 Finnhub 註冊一組，完全免費，不綁信用卡，可用廢棄信箱註冊，5分鐘就完成，有教學圖文可參考．",
+        "accent": "brand",
+        "ctaLabel": "前往FinMind Token 教學",
+        "ctaURL": "stockcalendar://finmind",
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-28T00:13:42.964Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-28-hhgl",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "全新 MT 行情中心、日曆修正與開場動畫\n\n◎ 全新 MT（Market Track）行情體驗\n• 台／美大盤、廣度、熱力、新聞、財報\n• 離線優先：可以到設定下載離線數據包（依需求去下載）\n• 圖表：線圖／K 線、均線、量能、網格\n\n◎ 日曆與帳務修正\n• 修正日曆損益在台／美／全切換、開盤／休市閘門等顯示問題\n• 交易日與幣別相關邏輯更一致，損益與快照更可靠\n\n◎ 其他數據修正\n• 修正多處快取與同步相關數據 bug，\n• 整體穩定度提升",
+        "accent": "brand",
+        "ctaLabel": "前往Market Track（行情）",
+        "ctaURL": "stockcalendar://mt",
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-21T01:33:09.855Z",
       "announcement": {
