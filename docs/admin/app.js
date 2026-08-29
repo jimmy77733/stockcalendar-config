@@ -746,6 +746,7 @@
       "stockcalendar://calendar": "日曆",
       "stockcalendar://analytics": "資產分析",
       "stockcalendar://mt": "Market Track",
+      "stockcalendar://discover": "每日精選",
       "stockcalendar://accounts": "資金帳戶",
       "stockcalendar://holdings": "持股列表",
       "stockcalendar://battlefield": "加權戰線",
