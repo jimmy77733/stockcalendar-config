@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-29T22:27:49.507Z",
+  "updatedAt": "2026-08-30T23:36:13.220Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.8",
+    "targetVersion": "1.9",
     "storeURL": "https://apps.apple.com/app/id6790064657",
-    "title": "有新版本可用",
+    "title": "又有新版本可用囉",
     "message": "建議更新以獲得最新功能與修正。"
   },
   "announcements": [
@@ -58,6 +58,20 @@
       "style": "modal",
       "title": "本次更新的功能！！",
       "body": "【Version 1.8 更新亮點】-4   帳戶與其他\n\n◆ 信貸帳戶智慧管理 \n• 月繳自動推進：確認計入或跳過後，扣款日自動推進下個月，精準解除提醒。 \n• 自動推算期限：依借款日與期數自動計算完整排程，移除繁瑣手動設定。 \n• 還清封存功能：期數全部還清後可自由選擇封存或刪除，介面資訊更清爽。\n\n◆ 體驗與細節打磨\n• 優化 App 啟動體驗。\n• 針對各尺寸小螢幕進行全面響應式排版調整，按鈕與文字不再被遮擋。\n• 美化離線資料庫管理介面，說明更親切好懂。\n• 完善中英文語言翻譯。",
+      "accent": "brand",
+      "ctaLabel": null,
+      "ctaURL": null,
+      "dismissible": true,
+      "startsAt": null,
+      "endsAt": null,
+      "frequency": "once"
+    },
+    {
+      "enabled": true,
+      "id": "ann-2026-08-30-rjwp",
+      "style": "modal",
+      "title": "本次更新的功能！！",
+      "body": "【Version 1.9 更新亮點】\n\n全新「報酬模擬」、日曆備註筆記本，以及寵物帶路的互動教學正式登場；每日精選與個股情報同步支援美股。\n\n◆ 全新功能：投資報酬模擬\n• 依目標、投組與人生階段試算報酬路徑，一眼比較不同配置。\n• 支援自訂投組與結果走勢圖，幫助規劃長期存股與資產配置。\n\n◆ 全新功能：日曆備註筆記本\n• 在日曆為特定日期留下備註與記事，對齊交易、配息與生活提醒。\n• 與現有日曆損益並存，回顧當天發生了什麼更完整。\n\n◆ 全新功能：互動教學導覽\n• 寵物導師帶你重溫日曆、分析、帳戶與行情頁操作。\n• 帳戶教學以示範卡片說明，不寫入真實資料，結束導覽即消失。\n• 設定頁可隨時重開各章教學。",
       "accent": "brand",
       "ctaLabel": null,
       "ctaURL": null,
