@@ -1,7 +1,92 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-29T22:27:49.507Z",
+  "updatedAt": "2026-08-30T23:36:13.220Z",
   "entries": [
+    {
+      "publishedAt": "2026-08-30T23:36:13.220Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-30-rjwp",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.9 更新亮點】\n\n全新「報酬模擬」、日曆備註筆記本，以及寵物帶路的互動教學正式登場；每日精選與個股情報同步支援美股。\n\n◆ 全新功能：投資報酬模擬\n• 依目標、投組與人生階段試算報酬路徑，一眼比較不同配置。\n• 支援自訂投組與結果走勢圖，幫助規劃長期存股與資產配置。\n\n◆ 全新功能：日曆備註筆記本\n• 在日曆為特定日期留下備註與記事，對齊交易、配息與生活提醒。\n• 與現有日曆損益並存，回顧當天發生了什麼更完整。\n\n◆ 全新功能：互動教學導覽\n• 寵物導師帶你重溫日曆、分析、帳戶與行情頁操作。\n• 帳戶教學以示範卡片說明，不寫入真實資料，結束導覽即消失。\n• 設定頁可隨時重開各章教學。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-30T23:36:13.220Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-29-7cr8",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.8 更新亮點】-4   帳戶與其他\n\n◆ 信貸帳戶智慧管理 \n• 月繳自動推進：確認計入或跳過後，扣款日自動推進下個月，精準解除提醒。 \n• 自動推算期限：依借款日與期數自動計算完整排程，移除繁瑣手動設定。 \n• 還清封存功能：期數全部還清後可自由選擇封存或刪除，介面資訊更清爽。\n\n◆ 體驗與細節打磨\n• 優化 App 啟動體驗。\n• 針對各尺寸小螢幕進行全面響應式排版調整，按鈕與文字不再被遮擋。\n• 美化離線資料庫管理介面，說明更親切好懂。\n• 完善中英文語言翻譯。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-30T23:36:13.220Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-29-race",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.8 更新亮點】-3  日曆與通知\n\n◆ 損益與行情精準度全面優化\n• 強化日曆每日未實現與已實現損益計算，確保歷史開市日與當日損益穩定呈現。\n• 優化大盤行情日與最後更新時間連動機制，盤中盤後數據精確掌握。\n• 修正排行版與板塊熱力圖即時漲跌跳動。\n\n◆ 推播設定全新改版 \n• 新增三大事件通知：支援「配息配股」、「定期定額」、「信貸扣款」到期提醒。 \n• 一鍵總開關與折疊排版：台美股頻率、推播內容與事件皆支援一鍵啟閉及收合展開。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-30T23:36:13.220Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-29-milo",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.8 更新亮點】-2  備份設定\n\n◆ 全新功能：iCloud 跨裝置備份與還原中心\n• 雲端快照同步：更換手機、重灌 App 或多裝置使用時，隨時查看雲端備份記錄與資產概況。\n• 彈性還原模式：支援「智慧合併至本機」與「完全覆蓋還原」，並可自由選擇是否同步還原 API 金鑰。\n• 清楚明瞭的裝置識別：即時顯示各備份之裝置名稱、更新時間、交易總數與總資產。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-08-30T23:36:13.220Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-08-29-2c3f",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.8 更新亮點】-1  MT介面\n\n全新「每日精選」選股探索、iCloud 跨裝置雲端備份與還原中心正式登場！\n\n◆ 全新功能：每日精選 (Daily Picks)\n• 每日精選 10 檔潛力標的：支援流暢卡片滑動手勢，輕鬆左滑略過、右滑追蹤、上滑置頂關注。\n• 智慧動態特徵標籤：依據即時價量、籌碼與型態自動生成專屬標籤。\n• 獨創「推薦指數」：結合量能放大倍數、法人籌碼力道與均線趨勢，0～100 指數化評分一眼看懂多空動能。\n• 深度行情透視：一鍵展開關鍵價量、20日均量對比、當沖比、融資增減與板塊產業定位。\n• 頂部產業分類快速篩選，支援 ETF、興櫃與各大熱門產業快速切換。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-29T22:27:49.507Z",
       "announcement": {
