@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-30T23:36:13.220Z",
+  "updatedAt": "2026-09-01T09:55:18.468Z",
   "entries": [
+    {
+      "publishedAt": "2026-09-01T09:55:18.468Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-09-01-iicw",
+        "style": "modal",
+        "title": "本次更新的功能！！",
+        "body": "【Version 1.9.1 更新亮點】\n\n修復舊版升級後帳本可能空白的問題，日曆今日損益改依盤中報價；持股沙盤改為分檔季配，隨手記各本手帳也有專屬頁。\n\n◆ 修復與體驗\n• 從舊版升級後帳本可能空白的問題已修復；若尚未更新，請先勿刪除 App。\n• 報酬試算的數字鍵盤可關閉確認。\n\n◆ 持股沙盤升級\n• 各檔依自己的報酬與殖利率分開試算，不再混成一池。\n• 高息標的改為季配再投入；可選擇粗估二代健保與股利所得稅（預設不扣）。\n\n◆ 隨手記：12 本手帳專屬頁\n• 分析頁一顆圖示開啟目前這本的專屬功能，週／月／年可左右平移。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-08-30T23:36:13.220Z",
       "announcement": {
