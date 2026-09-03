@@ -1,28 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-02T07:43:16.182Z",
+  "updatedAt": "2026-09-03T23:59:09.728Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.2",
+    "targetVersion": "1.9.3",
     "storeURL": "https://apps.apple.com/app/id6790064657",
-    "title": "又有新版本可用囉~~",
-    "message": "建議更新以獲得最新功能與修正。"
+    "title": "有新版本可更新！",
+    "message": "• 做了一些優化還有修復"
   },
-  "announcements": [
-    {
-      "enabled": true,
-      "id": "ann-2026-09-02-jhut",
-      "style": "modal",
-      "title": "本次更新的功能！！",
-      "body": "【Version 1.9.2 更新亮點】\n\n◆ 全新功能：日曆期間績效日誌 \n• 星號捷徑，一鍵檢視本月或本週損益曲線與記帳筆數統計。 \n• 投資個性評估：結合存股複利、長期持有、波段趨勢與動能開拓等多維度演算法，解析您的投資風格。 \n\n◆ 圖表體驗與動畫升級 \n• 損益曲線與資產走勢皆支援由左至右漸進繪製動畫。 \n• 觸摸十字線視覺輔助：圖表支援十字準星、頂部數值膠囊與觸感震動回饋。 \n\n◆ 系統與設定優化 \n• 新增「完整播放首頁動畫」開關：可自由選擇完整欣賞開場動畫或極速載入直達首頁。 \n• 雲端備份加固：優化 iCloud 備份與還原。",
-      "accent": "brand",
-      "ctaLabel": null,
-      "ctaURL": null,
-      "dismissible": true,
-      "startsAt": null,
-      "endsAt": null,
-      "frequency": "once"
-    }
-  ]
+  "announcements": []
 }
