@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-12T07:47:52.572Z",
+  "updatedAt": "2026-09-13T06:45:58.548Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.4",
+    "targetVersion": "1.9.5",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可更新！",
-    "message": ""
+    "message": "•新增「自訂損益顏色」：自由挑選漲跌色彩"
   },
   "announcements": [
     {
