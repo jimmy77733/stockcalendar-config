@@ -1,7 +1,41 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-13T06:45:58.548Z",
+  "updatedAt": "2026-09-14T01:28:05.233Z",
   "entries": [
+    {
+      "publishedAt": "2026-09-14T01:28:05.233Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-09-14-daij",
+        "style": "modal",
+        "title": "【Version 1.9.6 更新】",
+        "body": "•週期消費新增「週期收支總覽」面板\n•修復美股介面、編輯閃退問題\n•優化效能",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
+    {
+      "publishedAt": "2026-09-14T01:28:05.233Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-09-12-vnff",
+        "style": "modal",
+        "title": "【Version 1.9.4 更新】",
+        "body": "• 新增日曆語音快捷鍵\n• 新增7個陪伴寵物\n• 新增資金帳戶總覽與結構分析\n• 資產走勢新增單線長按十字準星\n• 台股收盤通知調整至 13:31 避",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-09-13T06:45:58.548Z",
       "announcement": {
