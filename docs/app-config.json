@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-13T06:45:58.548Z",
+  "updatedAt": "2026-09-14T01:28:05.233Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.5",
+    "targetVersion": "1.9.6",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可更新！",
-    "message": "•新增「自訂損益顏色」：自由挑選漲跌色彩"
+    "message": ""
   },
   "announcements": [
     {
@@ -16,6 +16,20 @@
       "style": "modal",
       "title": "【Version 1.9.4 更新】",
       "body": "• 新增日曆語音快捷鍵\n• 新增7個陪伴寵物\n• 新增資金帳戶總覽與結構分析\n• 資產走勢新增單線長按十字準星\n• 台股收盤通知調整至 13:31 避",
+      "accent": "brand",
+      "ctaLabel": null,
+      "ctaURL": null,
+      "dismissible": true,
+      "startsAt": null,
+      "endsAt": null,
+      "frequency": "once"
+    },
+    {
+      "enabled": true,
+      "id": "ann-2026-09-14-daij",
+      "style": "modal",
+      "title": "【Version 1.9.6 更新】",
+      "body": "•週期消費新增「週期收支總覽」面板\n•修復美股介面、編輯閃退問題\n•優化效能",
       "accent": "brand",
       "ctaLabel": null,
       "ctaURL": null,
