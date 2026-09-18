@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-14T01:28:05.233Z",
+  "updatedAt": "2026-09-18T01:54:41.017Z",
   "entries": [
+    {
+      "publishedAt": "2026-09-18T01:54:41.017Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-09-18-btll",
+        "style": "modal",
+        "title": "【Version 1.9.7 更新】",
+        "body": "• 新增全新功能系統「六衡」\n• 新增日曆時間可以快速選擇範圍\n• 新增日曆歷程記錄【點擊日曆標題進入】\n• 優化設定介面、數據請求\n• 修正一些 Bug",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-09-14T01:28:05.233Z",
       "announcement": {
