@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-18T01:54:41.017Z",
+  "updatedAt": "2026-09-23T01:11:29.863Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.7",
+    "targetVersion": "1.9.8",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可更新！",
     "message": ""
@@ -12,10 +12,10 @@
   "announcements": [
     {
       "enabled": true,
-      "id": "ann-2026-09-18-btll",
+      "id": "ann-2026-09-23-gp16",
       "style": "modal",
-      "title": "【Version 1.9.7 更新】",
-      "body": "• 新增全新功能系統「六衡」\n• 新增日曆時間可以快速選擇範圍\n• 新增日曆歷程記錄【點擊日曆標題進入】\n• 優化設定介面、數據請求\n• 修正一些 Bug",
+      "title": "【Version 1.9.8 更新】",
+      "body": "• 優化「今日看板」桌面小工具。\n• 優化收盤通知和修復已知問題。\n• 修正語音多筆記帳與資金紀錄編輯流程。",
       "accent": "brand",
       "ctaLabel": null,
       "ctaURL": null,
