@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-18T01:54:41.017Z",
+  "updatedAt": "2026-09-23T01:11:29.863Z",
   "entries": [
+    {
+      "publishedAt": "2026-09-23T01:11:29.863Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-09-23-gp16",
+        "style": "modal",
+        "title": "【Version 1.9.8 更新】",
+        "body": "• 優化「今日看板」桌面小工具。\n• 優化收盤通知和修復已知問題。\n• 修正語音多筆記帳與資金紀錄編輯流程。",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-09-18T01:54:41.017Z",
       "announcement": {
