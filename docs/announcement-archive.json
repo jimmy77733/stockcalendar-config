@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-23T01:11:29.863Z",
+  "updatedAt": "2026-10-02T01:08:38.392Z",
   "entries": [
+    {
+      "publishedAt": "2026-10-02T01:08:38.392Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-10-02-zg6k",
+        "style": "modal",
+        "title": "【版本 1.9.9 更新內容】",
+        "body": "•日曆目標進度條新增「進度百分比」\n•日詳情頁排版優化\n•持股帳戶分析視覺優化\n•單一帳戶篩選修正\n•美股配息顯示幣值修正",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-09-23T01:11:29.863Z",
       "announcement": {
