@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-23T01:11:29.863Z",
+  "updatedAt": "2026-10-02T01:08:38.392Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.8",
+    "targetVersion": "1.9.9",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可更新！",
     "message": ""
@@ -12,10 +12,10 @@
   "announcements": [
     {
       "enabled": true,
-      "id": "ann-2026-09-23-gp16",
+      "id": "ann-2026-10-02-zg6k",
       "style": "modal",
-      "title": "【Version 1.9.8 更新】",
-      "body": "• 優化「今日看板」桌面小工具。\n• 優化收盤通知和修復已知問題。\n• 修正語音多筆記帳與資金紀錄編輯流程。",
+      "title": "【版本 1.9.9 更新內容】",
+      "body": "•日曆目標進度條新增「進度百分比」\n•日詳情頁排版優化\n•持股帳戶分析視覺優化\n•單一帳戶篩選修正\n•美股配息顯示幣值修正",
       "accent": "brand",
       "ctaLabel": null,
       "ctaURL": null,
