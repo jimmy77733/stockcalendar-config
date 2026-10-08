@@ -1,7 +1,24 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-02T01:08:38.392Z",
+  "updatedAt": "2026-10-08T02:18:06.854Z",
   "entries": [
+    {
+      "publishedAt": "2026-10-08T02:18:06.854Z",
+      "announcement": {
+        "enabled": true,
+        "id": "ann-2026-10-08-d4jb",
+        "style": "modal",
+        "title": "【版本 2.0.0 更新內容】",
+        "body": "• 新增「零死哲學 (DWZ)」功能\n• 新增「富足傳承 (LAL)」功能\n• 新增「自訂（OWN）」功能\n• 新增財務小工具 Widget\n• 同步備份優化",
+        "accent": "brand",
+        "ctaLabel": null,
+        "ctaURL": null,
+        "dismissible": true,
+        "startsAt": null,
+        "endsAt": null,
+        "frequency": "once"
+      }
+    },
     {
       "publishedAt": "2026-10-02T01:08:38.392Z",
       "announcement": {
