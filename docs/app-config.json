@@ -1,10 +1,10 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-02T01:08:38.392Z",
+  "updatedAt": "2026-10-08T02:18:06.854Z",
   "feedbackFormURL": "https://forms.gle/tGECU4KmFZqs8DRD8",
   "update": {
     "mode": "soft",
-    "targetVersion": "1.9.9",
+    "targetVersion": "2.0.0",
     "storeURL": "https://apps.apple.com/app/id6790064657",
     "title": "有新版本可更新！",
     "message": ""
@@ -12,10 +12,10 @@
   "announcements": [
     {
       "enabled": true,
-      "id": "ann-2026-10-02-zg6k",
+      "id": "ann-2026-10-08-d4jb",
       "style": "modal",
-      "title": "【版本 1.9.9 更新內容】",
-      "body": "•日曆目標進度條新增「進度百分比」\n•日詳情頁排版優化\n•持股帳戶分析視覺優化\n•單一帳戶篩選修正\n•美股配息顯示幣值修正",
+      "title": "【版本 2.0.0 更新內容】",
+      "body": "• 新增「零死哲學 (DWZ)」功能\n• 新增「富足傳承 (LAL)」功能\n• 新增「自訂（OWN）」功能\n• 新增財務小工具 Widget\n• 同步備份優化",
       "accent": "brand",
       "ctaLabel": null,
       "ctaURL": null,
